@@ -1,8 +1,6 @@
 package modelo.tipos;
 
-import modelo.Tipo;
-
-public abstract class Efeito extends Tipo {
+public abstract class Efeito {
 	
 	//Efeito das cartas de efeito.
 	

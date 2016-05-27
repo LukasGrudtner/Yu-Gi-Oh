@@ -6,5 +6,15 @@ public abstract class Card {
 	public Tipo tipo;
 	public int numero;
 	public String descricao;
+	
+	public String getNome() {
+		return this.nome;
+	}
+	
+	public String getDescricao() {
+		return this.descricao;
+	}
+	
+	
 
 }
