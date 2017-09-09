@@ -3,14 +3,10 @@ package modelo.decks;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
-import javax.swing.JOptionPane;
 import modelo.Card;
 import modelo.CardArmadilha;
 import modelo.CardMagia;
 import modelo.CardMonstro;
-import modelo.CardMonstro.AtributoCard;
-import modelo.CardMonstro.TipoCard;
 import modelo.CardMonstroComEfeito;
 import modelo.CardMonstroFusao;
 import modelo.CardMonstroRitual;
@@ -43,6 +39,7 @@ public class ListaCards {
 	private CardMonstroSemEfeito cardMonstroSemEfeito;
 	private CardMonstroComEfeito cardMonstroComEfeito;
 	private CardMonstroRitual cardMonstroRitual;
+	private CardMonstroFusao cardMonstroFusao;
 	
 	private Efeito efeitoContinuo;
 	private Efeito efeitoGatilho;
@@ -64,7 +61,7 @@ public class ListaCards {
 	private Tipo ritual;
 	
 	private List<Card> deckCards;
-	private List<Card> deckCardsFusao;
+	private List<CardMonstroFusao> deckCardsFusao;
 	
 	public ListaCards() {
 		deckCards = new ArrayList<>();
@@ -76,12 +73,6 @@ public class ListaCards {
 		criaCardMonstro();
 		criaCardMagia();
 		criaCardArmadilha();
-		
-		//embaralhaCards();
-		
-		
-//		for(int i = 0; i < this.deckCards.size(); i++)
-//			System.out.println(this.deckCards.get(i).getNome());
 	}
 
 	private void criaEfeitos() {
@@ -249,189 +240,188 @@ public class ListaCards {
 		String descricao;
 		
 		descricao = "<html>Um gênio da lâmpada que está sempre à disposição do seu mestre.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("La Jinn, o Gênio Místico da Lâmpada", 4, AtributoCard.Trevas, TipoCard.Demonio, 97590747, 1800, 1000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("La Jinn, o Gênio Místico da Lâmpada", 4, 97590747, 1800, 1000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Este card ganha 300 de ATK para cada 'Mago Negro' ou 'Mago do Caos das Trevas' no Cemitério de qualquer duelista.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Pequena Maga Negra", 6, AtributoCard.Trevas, TipoCard.Mago, efeitoContinuo, 38033121, 2000, 1700, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Pequena Maga Negra", 6, efeitoContinuo, 38033121, 2000, 1700, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Você pode Invocar este card por Invocação-Ritual com 'Ritual de Magia Negra'.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago do Caos das Trevas", 8, AtributoCard.Trevas, TipoCard.Mago, 30208479, 2800, 2600, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago do Caos das Trevas", 8, 30208479, 2800, 2600, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Manipula os ataques inimigos com o poder da ilusão.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago Ilusionista sem Rosto", 5, AtributoCard.Trevas, TipoCard.Mago, 28546905, 1200, 2200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago Ilusionista sem Rosto", 5, 28546905, 1200, 2200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>'Gaia, o Cavaleiro Impetuoso' + 'Maldição do Dragão'</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Gaia, o Matador de Dragões", 7, AtributoCard.Vento, TipoCard.Dragao, 66889139, 2600, 2100, descricao);
-		deckCardsFusao.add(cardMonstroSemEfeito);
+		cardMonstroFusao = new CardMonstroFusao("Gaia, o Matador de Dragões", 7, true, 66889139, 2600, 2100, descricao);
+		deckCardsFusao.add(cardMonstroFusao);
 		
 		descricao = "<html>Quando um ou mais Cards de Equipamento forem equipados a este card: destrua os Cards de Equipamento.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Gearfried, o Cavaleiro de Ferro", 4, AtributoCard.Terra, TipoCard.Guerreiro, efeitoGatilho, 423705, 1800, 1600, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Gearfried, o Cavaleiro de Ferro", 4, efeitoGatilho, 423705, 1800, 1600, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>A grossa couraça desse monstro desvia a maioria dos ataques.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Griffore", 4, AtributoCard.Terra, TipoCard.Besta, 53829412, 1200, 1500, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Griffore", 4, 53829412, 1200, 1500, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um touro monstruoso muitas vezes encontrado na floresta, ele ataca os monstros inimigos com o seu par de chifres mortíferos.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Jovem Touro Guerreiro", 5, AtributoCard.Terra, TipoCard.BestaGuerreira, 18246479, 1800, 1300, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Jovem Touro Guerreiro", 5, 18246479, 1800, 1300, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Durante o turno do seu oponente, no cálculo de dano: você pode descartar este card; você não sofre dano de batalha desta batalha (este é um Efeito Rápido).</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Kuriboh", 1, AtributoCard.Trevas, TipoCard.Demonio, efeitoRapido, 40650057, 300, 200, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Kuriboh", 1, efeitoRapido, 40650057, 300, 200, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>O que esta criatura falta em tamanho ele compensa em defesa quando lutando na pradaria.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Castor Guerreiro", 4, AtributoCard.Terra, TipoCard.BestaGuerreira, 32452818, 1200, 1500, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Castor Guerreiro", 4, 32452818, 1200, 1500, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um mamute que protege os túmulos do seu bando e que enfrenta ladrões de túmulos impiedosamente.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Cemitério de Mamutes", 3, AtributoCard.Terra, TipoCard.Dinossauro, 40374923, 1200, 800, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Cemitério de Mamutes", 3, 40374923, 1200, 800, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um pequeno demônio brincalhão que se esconde na escuridão, esperando para atacar um inimigo descuidado.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Diabrete Selvagem", 4, AtributoCard.Trevas, TipoCard.Demonio, 41392891, 1300, 1400, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Diabrete Selvagem", 4, 41392891, 1300, 1400, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um dragão normalmente encontrado protegendo fortalezas das montanhas. O seu ataque característico é um mergulho arrebatador vindo do céu.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Alado, Guardião da Fortaleza Nº1", 4, AtributoCard.Vento, TipoCard.Dragao, 87796900, 1400, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Alado, Guardião da Fortaleza Nº1", 4, 87796900, 1400, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Uma elfa delicada com pouco poder de ataque, mas com uma incrível defesa proveniente de poderes místicos.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Elfa Mística", 4, AtributoCard.Luz, TipoCard.Mago, 15025844, 800, 2000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Elfa Mística", 4, 15025844, 800, 2000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um cavaleiro cujo cavalo galopa mais rápido do que o vento. A sua carga de batalha é de uma força avassaladora.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Gaia, o Cavaleiro Impetuoso", 7, AtributoCard.Trevas, TipoCard.Guerreiro, 6368038, 2300, 2100, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Gaia, o Cavaleiro Impetuoso", 7, 6368038, 2300, 2100, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um elfo que aprendeu a empunhar uma espada, ele confunde os inimigos com ataques relâmpagos.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Guardião Celta", 4, AtributoCard.Terra, TipoCard.Guerreiro, 91152256, 1400, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Guardião Celta", 4, 91152256, 1400, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>O mago definitivo em termos de ataque e defesa.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago Negro", 7, AtributoCard.Trevas, TipoCard.Mago, 46986414, 2500, 2100, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Mago Negro", 7, 46986414, 2500, 2100, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um dragão perverso que se apoia nas forças das trevas para executar um poderoso ataque.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Maldição do Dragão", 5, AtributoCard.Trevas, TipoCard.Dragao, 28279543, 2000, 1500, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Maldição do Dragão", 5, 28279543, 2000, 1500, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>VIRE: Destrói 1 Card de Armadilha no Campo. Se o alvo deste card está com a face para baixo, vire a face para cima. Se for um Card de Armadilha é destruído. Se não, coloque-o novamente com a face para baixo. O card virado não é ATIVADO.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Mestre das Armadilhas", 3, AtributoCard.Terra, TipoCard.Guerreiro, efeitoVirar, 46461247, 500, 1100, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Mestre das Armadilhas", 3, efeitoVirar, 46461247, 500, 1100, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Um guerreiro gigante feito de pedra. Um soco desta criatura faz com que a terra estremça.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Soldado Gigante de Pedra", 3, AtributoCard.Terra, TipoCard.Rocha, 13039848, 1300, 2000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Soldado Gigante de Pedra", 3, 13039848, 1300, 2000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Uma perna direita, proibida e selada por magia. Qualquer um que romper este selo obterá poder infinito.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Perna Direita do Proibido", 1, AtributoCard.Trevas, TipoCard.Mago, 8124921, 200, 300, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Perna Direita do Proibido", 1, 8124921, 200, 300, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Uma perna esquerda, proibida e selada por magia. Qualquer um que romper este selo obterá poder infinito.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Perna Esquerda do Proibido", 1, AtributoCard.Trevas, TipoCard.Mago, 44519536, 200, 300, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Perna Esquerda do Proibido", 1, 44519536, 200, 300, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
+		// ARRUMAR O EFEITO(CONTINUO)
 		descricao = "<html>'Maga Negra' + 'Buster Blader'. Deve ser Invocado por Invocação-Fusão e não pode ser Invocado por Invocação-Especial de outras formas. Durante o turno de qualquer duelista, quando um Card de Magia for ativado: você pode descartar 1 card; negue a ativação e, se isso acontecer, destrua-o. Este card deve estar face para cima no campo para ativar e resolver este efeito. Este card ganha 500 de ATK para cada monstro do Tipo Dragão no campo ou Cemitério de qualquer duelista.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Paladino Negro", 8, AtributoCard.Trevas, TipoCard.Mago, efeitoContinuo, 98502113, 2900, 2400, descricao);
-		deckCardsFusao.add(cardMonstroComEfeito);
+		cardMonstroFusao = new CardMonstroFusao("Paladino Negro", 8, true, 98502113, 2900, 2400, descricao);
+		deckCardsFusao.add(cardMonstroFusao);
 		
 		descricao = "<html>Um demônio com poderes das trevas para confundir os inimigos. Entre os monstros do tipo demônio, é dos mais fortes.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Rei Caveira", 6, AtributoCard.Trevas, TipoCard.Demonio, 70781052, 2500, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Rei Caveira", 6, 70781052, 2500, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Você pode Invocar este card por Invocação-Especial com 'Ritual do Lustro Negro'.</html>";
-		cardMonstroRitual = new CardMonstroRitual("Soldado do Lustro Negro", 8, AtributoCard.Terra, TipoCard.Guerreiro, 5405694, 3000, 2500, descricao);
+		cardMonstroRitual = new CardMonstroRitual("Soldado do Lustro Negro", 8, true, 5405694, 3000, 2500, descricao);
 		deckCards.add(cardMonstroRitual);
 		
 		descricao = "<html>'Dragão Branco de Olhos Azuis' + 'Dragão Branco de Olhos Azuis' + 'Dragão Branco de Olhos Azuis'</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Supremo Dragão Branco de Olhos Azuis", 12, AtributoCard.Luz, TipoCard.Dragao, 23995346, 4500, 3800, descricao);
-		deckCardsFusao.add(cardMonstroSemEfeito);
+		cardMonstroFusao = new CardMonstroFusao("Supremo Dragão Branco de Olhos Azuis", 12, true, 23995346, 4500, 3800, descricao);
+		deckCardsFusao.add(cardMonstroFusao);
 		
 		descricao = "<html>Uma vez por turno: você pode oferecer 1 monstro como Tributo; cause dano ao seu oponente igual à metade do ATK que o monstro oferecido como Tributo tinha no campo.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Tartaruga Catapulta", 5, AtributoCard.Agua, TipoCard.Aqua, 95727991, 1000, 2000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Tartaruga Catapulta", 5, 95727991, 1000, 2000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Muito mais do que um filhote, este dragão é dotado de poderes ainda não revelados.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Bebê Dragão", 3, AtributoCard.Vento, TipoCard.Dragao, 88819587, 1200, 700, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Bebê Dragão", 3, 88819587, 1200, 700, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Quando este card for Invocado por Invocação-Normal ou Virar: você pode adicionar 1 'Gazelle, o Rei das Bestas Místicas' do seu Deck à sua mão.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Berfomet", 4, AtributoCard.Terra, TipoCard.Besta, 5818798, 1500, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Berfomet", 4, 5818798, 1500, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Alfa, Beta e Gama se juntam em um para formar um monstro poderoso.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Beta, o Guerreiro Imã", 4, AtributoCard.Terra, TipoCard.Rocha, 39256679, 1700, 1600, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Beta, o Guerreiro Imã", 4, 39256679, 1700, 1600, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um braço direito, proibido e selado por magia. Qualquer um que romper este selo obterá poder infinito.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Braço Direito do Proibido", 1, AtributoCard.Trevas, TipoCard.Mago, 70903634, 200, 300, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Braço Direito do Proibido", 1, 70903634, 200, 300, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um braço esquerdo, proibido e selado por magia. Qualquer um que romper este selo obterá poder infinito.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Braço Esquerdo do Proibido", 1, AtributoCard.Trevas, TipoCard.Mago, 7902349, 200, 300, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Braço Esquerdo do Proibido", 1, 7902349, 200, 300, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Este card ganha 500 de ATK para cada monstro do Tipo Dragão que seu oponente controla ou que estiver no Cemitério dele.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Buster Blader", 7, AtributoCard.Terra, TipoCard.Guerreiro, efeitoContinuo, 78193831, 2600, 2300, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Buster Blader", 7, efeitoContinuo, 78193831, 2600, 2300, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Este lendário dragão é uma poderosa máquina de destruição. Praticamente invencível, muito poucos enfrentaram essa magnifica criatura e viveram para contar a história.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Branco de Olhos Azuis", 8, AtributoCard.Luz, TipoCard.Dragao, 89631139, 3000, 2500, descricao);
-		deckCards.add(cardMonstroSemEfeito);
-		deckCards.add(cardMonstroSemEfeito);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Branco de Olhos Azuis", 8, 89631139, 3000, 2500, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>'Rei Caveira' + 'Dragão Negro de Olhos Vermelhos'</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Caveira Negro", 9, AtributoCard.Trevas, TipoCard.Dragao, 11901678, 3200, 2500, descricao);
-		deckCardsFusao.add(cardMonstroSemEfeito);
+		cardMonstroFusao = new CardMonstroFusao("Dragão Caveira Negro", 9, true, 11901678, 3200, 2500, descricao);
+		deckCardsFusao.add(cardMonstroFusao);
 		
 		descricao = "<html>Um dragão malégno que cospe fogo. As suas chamas maléficas corrompem as almas de suas vítimas.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Koumori", 4, AtributoCard.Trevas, TipoCard.Dragao, 67724379, 1500, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Koumori", 4, 67724379, 1500, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um dragão feroz com um ataque letal.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Negro de Olhos Vermelhos", 7, AtributoCard.Trevas, TipoCard.Dragao, 74677422, 2400, 2000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Dragão Negro de Olhos Vermelhos", 7, 74677422, 2400, 2000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Um espadachim habilidoso que é metade serpente, metade humano. O golpe de sua espada é tão rápido como o som!</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Espada do Jacaré", 4, AtributoCard.Terra, TipoCard.Besta, 64428736, 1500, 1200, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Espada do Jacaré", 4, 64428736, 1500, 1200, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Se, além deste card na sua mão, você tiver 'Perna Direita do Proibido', 'Perna Esquerda do Proibido', 'Braço Direito do Proibido' e 'Braço Esquerdo do Proibido', você vence o Duelo.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Exódia, O Proibido", 3, AtributoCard.Trevas, TipoCard.Mago, 33396948, 1000, 1000, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Exódia, O Proibido", 3, 33396948, 1000, 1000, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Se este card atacar, ele é colocado em Posição de Defesa no final da Fase de Batalha e sua posição da batalha não pode mudar até a Fase Final do seu próximo turno.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Força de Ataque Goblin", 4, AtributoCard.Terra, TipoCard.Guerreiro, efeitoGatilho, 78658564, 2300, 0, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Força de Ataque Goblin", 4, efeitoGatilho, 78658564, 2300, 0, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Um tubarão branco gigante com dentes afiados como lâminas.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Grande Branco", 4, AtributoCard.Agua, TipoCard.Peixe, 13429800, 1600, 800, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Grande Branco", 4, 13429800, 1600, 800, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Com um machado em cada mão, este monstro causa grandes estragos.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Imperador Cruel", 5, AtributoCard.Terra, TipoCard.BestaGuerreira, 26378150, 1800, 1600, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Imperador Cruel", 5, 26378150, 1800, 1600, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>VIRE: Escolha 1 monstro no campo; destrua o alvo.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Inseto Devorador de Homens", 2, AtributoCard.Terra, TipoCard.Inseto, efeitoVirar, 54652250, 450, 600, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Inseto Devorador de Homens", 2, efeitoVirar, 54652250, 450, 600, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Uma vez por turno: você pode lançar uma moeda e escolher cara ou coroa. Se você ganhar, destrua todos os monstros que seu oponente controla. Se você perder, destrua todos monstros que você controla e, se isso acontecer, você sofre dano igual à metade do ATK total que esses monstros destruídos tinham no campo.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Mago do Tempo", 2, AtributoCard.Luz, TipoCard.Mago, efeitoGatilho, 71625222, 500, 400, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Mago do Tempo", 2, efeitoGatilho, 71625222, 500, 400, descricao);
 		deckCards.add(cardMonstroComEfeito);
 		
 		descricao = "<html>Um lobo da neve que, embora agrade aos olhos, é absolutamente feroz em batalha.</html>";
-		cardMonstroSemEfeito = new CardMonstroSemEfeito("Presas de Prata", 3, AtributoCard.Terra, TipoCard.Besta, 90357090, 1200, 800, descricao);
+		cardMonstroSemEfeito = new CardMonstroSemEfeito("Presas de Prata", 3, 90357090, 1200, 800, descricao);
 		deckCards.add(cardMonstroSemEfeito);
 		
 		descricao = "<html>Quando este card for enviado do campo para o Cemitério: adicione 1 monstro com 1500 ou menos de ATK do seu Deck à sua mão.</html>";
-		cardMonstroComEfeito = new CardMonstroComEfeito("Sangan", 3, AtributoCard.Trevas, TipoCard.Demonio, efeitoGatilho, 26202165, 1000, 600, descricao);
+		cardMonstroComEfeito = new CardMonstroComEfeito("Sangan", 3, efeitoGatilho, 26202165, 1000, 600, descricao);
 		deckCards.add(cardMonstroComEfeito);
 	}
 
@@ -469,5 +459,9 @@ public class ListaCards {
 	
 	public void embaralhaCards() {
 		Collections.shuffle(deckCards);
+	}
+	
+	public List<CardMonstroFusao> getDeckFusao() {
+		return this.deckCardsFusao;
 	}
 }

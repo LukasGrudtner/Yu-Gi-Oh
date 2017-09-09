@@ -1,16 +1,27 @@
 package modelo;
 
 import excecoes.ExcecaoFace;
+import excecoes.ExcecaoPosicao;
 import interfaces.Face;
 import interfaces.Posicao;
+import modelo.estados.estadosCard.FaceParaBaixo;
+import modelo.estados.estadosCard.PosicaoAtaque;
 
 public abstract class Card {
 	
-	public String nome;
-	public Tipo tipo;
-	public int numero;
-	public String descricao;
-	protected Face face;
+	private String nome;
+	private Tipo tipo;
+	private int numero;
+	private String descricao;
+	private Face face;
+	//private Posicao posicao;
+	
+	public Card(String nome, int numero, String descricao) {
+		this.nome = nome;
+		this.numero = numero;
+		this.descricao = descricao;
+		//this.face = new FaceParaBaixo(this);
+	}
 	
 	
 	public String getNome() {
@@ -29,11 +40,13 @@ public abstract class Card {
 		this.face = face;
 	}
 	
-	public void faceParaCima() throws ExcecaoFace {
+	public void mudaFaceParaCima() throws ExcecaoFace {
 		face.mudaFaceParaCima();
 	}
 	
-	public void faceParaBaixo() throws ExcecaoFace {
+	public void mudaFaceParaBaixo() throws ExcecaoFace {
 		face.mudaFaceParaBaixo();
 	}
+	
+	
 }

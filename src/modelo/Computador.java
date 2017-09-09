@@ -3,8 +3,13 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Computador {
+import excecoes.ExcecaoLimite;
+import interfaces.Limite;
+import modelo.estados.LimiteNaoExcedido;
+
+public class Computador extends Player {
 	
+	private Limite limite;
 	private int pontosDeVida;
 	private List<Card> deckCards;
 	private List<CardMonstroFusao> deckCardsFusao;
@@ -15,6 +20,7 @@ public class Computador {
 		pontosDeVida = 8000;
 		deckCards = new ArrayList<>();
 		deckCardsFusao = new ArrayList<>();
+		this.mudaLimite(new LimiteNaoExcedido(this));
 	}
 	
 //	public Computador getInstance() {
@@ -49,6 +55,22 @@ public class Computador {
 	
 	public int getPontosDeVida() {
 		return this.pontosDeVida;
+	}
+	
+	public void mudaLimite(Limite limite) {
+		this.limite = limite;
+	}
+	
+	public Limite getLimite() {
+		return this.limite;
+	}
+	
+	public void mudaParaLimiteExcedido() throws ExcecaoLimite {
+		limite.mudaParaLimiteExcedido();
+	}
+	
+	public void mudaParaLimiteNaoExcedido() throws ExcecaoLimite {
+		limite.mudaParaLimiteNaoExcedido();
 	}
 	
 }

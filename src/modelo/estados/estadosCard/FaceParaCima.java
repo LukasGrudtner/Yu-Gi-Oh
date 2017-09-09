@@ -1,4 +1,4 @@
-package modelo.estados.estadosCarta;
+package modelo.estados.estadosCard;
 
 import excecoes.ExcecaoFace;
 import excecoes.ExcecaoFaceParaCima;

@@ -1,0 +1,11 @@
+### Versão 4 ###
+
+* Novos métodos na Interface Gráfica e no Campo de Batalha.
+
+* Classe Battle realiza o cálculo do dano causado entre os monstros.
+
+* Classe Pontuação armazena as estatísticas de jogo.
+
+* Implementada a serialização.
+
+* Novas classes na Visão.

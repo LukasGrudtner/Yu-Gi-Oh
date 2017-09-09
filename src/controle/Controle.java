@@ -18,6 +18,7 @@ public class Controle {
 	private CampoDeBatalha campoDeBatalha;
 	private EfeitoCardsMagia efeitoCardsMagia;
 	private InterfaceGrafica interfaceGrafica;
+	private ListaCards listaCards;
 	
 	public Controle() {
 		this.Corpo();
@@ -25,15 +26,16 @@ public class Controle {
 	
 	private void Corpo() {
 		
-		jogador = new Jogador();
+		listaCards = new ListaCards();
+		jogador = new Jogador(listaCards.getDeckFusao());
 		computador = new Computador();
 		gerenciador = new Gerenciador(jogador, computador);
 		gerenciador.defineCartasJogador();
 		gerenciador.defineCartasCPU();
-		campoDeBatalha = new CampoDeBatalha(jogador.getDeck(), jogador.getDeckFusao(), computador.getDeck(), computador.getDeckFusao());
+		campoDeBatalha = new CampoDeBatalha(jogador, computador, jogador.getDeck(), jogador.getDeckFusao(), computador.getDeck(), computador.getDeckFusao());
 		interfaceGrafica = new InterfaceGrafica(campoDeBatalha);
-		campoDeBatalha.setInicioJogo();
-		efeitoCardsMagia = new EfeitoCardsMagia(jogador, computador, campoDeBatalha);
+		//campoDeBatalha.setInicioJogo();
+//		efeitoCardsMagia = new EfeitoCardsMagia(jogador, computador, campoDeBatalha);
 		gerenciador.setCampoDeBatalha(campoDeBatalha);
 		campoDeBatalha.setInterfaceGrafica(interfaceGrafica);
 	}

@@ -14,7 +14,6 @@ public class TurnoComputador implements Turno {
 	public TurnoComputador(CampoDeBatalha campoDeBatalha) {
 		this.campoDeBatalha = campoDeBatalha;
 		campoDeBatalha.compra5CardsInicio();
-		System.out.println("Turno Computador");
 	}
 
 	@Override

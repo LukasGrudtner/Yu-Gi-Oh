@@ -1,28 +1,19 @@
 package modelo;
 
-import modelo.CardMonstro.AtributoCard;
-import modelo.CardMonstro.TipoCard;
+import modelo.tipos.Efeito;
 
 public class CardMonstroRitual extends CardMonstro {
 	
 	boolean ritual;
 	
-	public CardMonstroRitual(String nome, int nivel, AtributoCard atributoCard, TipoCard tipoCard, int numero, int ATK, int DEF, String descricao) {
-		this.nome = nome;
-		this.nivel = nivel;
-		this.atributoCard = atributoCard;
-		this.tipoCard = tipoCard;
-		this.numero = numero;
-		this.ATK = ATK;
-		this.DEF = DEF;
-		this.ritual = true;
-		this.descricao = descricao;
-		this.face = face;
+	public CardMonstroRitual(String nome, int nivel, boolean ritual, int numero, int ATK, int DEF, String descricao) {
+		super(nome, nivel, numero, ATK, DEF, descricao);
+		this.ritual = ritual;
 	}
 
-	@Override
-	public TipoCard getTipoCard() {
-		return this.tipoCard;
-	}
+//	@Override
+//	public TipoCard getTipoCard() {
+//		return this.tipoCard;
+//	}
 
 }

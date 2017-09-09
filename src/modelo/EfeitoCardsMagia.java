@@ -14,11 +14,108 @@ public class EfeitoCardsMagia {
 	CampoDeBatalha campoDeBatalha;
 	Jogador jogador;
 	Computador computador;
+	String nomeCard;
 	
-	public EfeitoCardsMagia(Jogador jogador, Computador computador, CampoDeBatalha campoDeBatalha) {
-		this.jogador = jogador;
-		this.computador = computador;
+	public EfeitoCardsMagia(CampoDeBatalha campoDeBatalha, String nomeCard) {
+//		this.jogador = jogador;
+//		this.computador = computador;
 		this.campoDeBatalha = campoDeBatalha;
+		this.nomeCard = nomeCard;
+		escolheEfeito(nomeCard);
+		
+	}
+
+	private void escolheEfeito(String nomeCard) {
+		switch (nomeCard){
+		
+		case "Alma Livre":
+			AlmaLivre();
+			break;
+			
+		case "Arremetida Imprudente":
+			ArremetidaImprudente();
+			break;
+			
+		case "Brumas Mágicas de Makiu":
+			BrumasMagicasDeMakiu();
+			break;
+			
+		case "Buraco Negro":
+			BuracoNegro();
+			break;
+			
+		case "Caixa Mágica":
+			CaixaMagica();
+			break;
+			
+		case "Chifre do Unicórnio":
+			ChifreDoUnicornio();
+			break;
+			
+		case "Dado Gracioso":
+			DadoGracioso();
+			break;
+			
+		case "Destruição de Cards":
+			DestruicaoDeCards();
+			break;
+			
+		case "Dian Keto, Mestre da Cura":
+			DianKetoMestreDaCura();
+			break;
+			
+		case "Espada Sombria da Destruição":
+			EspadaSombriaDaDestruicao();
+			break;
+			
+		case "Espadas da Luz Reveladora":
+			EspadasDaLuzReveladora();
+			break;
+			
+		case "Fissura":
+			Fissura();
+			break;
+			
+		case "Mudança de Opinião":
+			MudancaDeOpiniao();
+			break;
+			
+		case "Polimerização":
+			Polimerizacao();
+			break;
+			
+		case "Pote da Ganância":
+			PoteDaGanancia();
+			break;
+			
+		case "Remover Armadilha":
+			RemoverArmadilha();
+			break;
+			
+		case "Remover Magia":
+			RemoverMagia();
+			break;
+			
+		case "Reviver Monstro":
+			ReviverMonstro();
+			break;
+			
+		case "Ritual do Lustro Negro":
+			RitualDoLustroNegro();
+			break;
+			
+		case "Testamento":
+			Testamento();
+			break;
+			
+		case "Tufão Espacial Místico":
+			TufaoEspacialMistico();
+			break;
+			
+		case "Turbilhão de Relâmpagos":
+			TurbilhaoDeRelampagos();
+			break;
+		}
 	}
 	
 	// Implementar um método maior que cobre todos os metodos de efeitos de magia. Ele recebe o nº do card como parâmetro, e com o switch case define
@@ -53,8 +150,10 @@ public class EfeitoCardsMagia {
 	
 	public void BuracoNegro() {
 		// Destrua todos os monstros no campo.
-		campoDeBatalha.removeTodosOsCardsMonstrosNoCampoDoJogador();
-		campoDeBatalha.removeTodosOsCardsMonstrosNoCampoDoComputador();
+		for(int i = 0; i < 6; i++) {
+			campoDeBatalha.removeCardMonstroJogador(i);
+			campoDeBatalha.removeCardMonstroComputador(i);
+		}
 	}
 	
 	public void CaixaMagica() {
@@ -154,10 +253,10 @@ public class EfeitoCardsMagia {
 
 		// Aumente seus Pontos de Vida em 1000 pontos.
 		if(campoDeBatalha.getTurno() instanceof TurnoJogador)
-			jogador.setPontosDeVida(jogador.getPontosDeVida() + 1000);
+			campoDeBatalha.setPontosVidaJogador(campoDeBatalha.getVidaJogador() + 1000);
 		//if(campoDeBatalha.getTurno().getClass() == TurnoJogador.class)	
 		if(campoDeBatalha.getTurno() instanceof TurnoComputador)
-			computador.setPontosDeVida(computador.getPontosDeVida() + 1000);
+			campoDeBatalha.setPontosVidaComputador(campoDeBatalha.getVidaComputador() + 1000);
 		//if(campoDeBatalha.getTurno().getClass() == TurnoComputador.class)
 	}
 	

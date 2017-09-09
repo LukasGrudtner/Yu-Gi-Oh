@@ -1,18 +1,29 @@
 package modelo;
 
+import excecoes.ExcecaoAtaque;
 import excecoes.ExcecaoPosicao;
+import interfaces.Ataque;
 import interfaces.Posicao;
+import modelo.estados.estadosCard.PosicaoAtaque;
+import modelo.estados.estadosCard.PosicaoDefesa;
+import modelo.estados.estadosCard.estadosCardMonstro.AtaqueNaoRealizado;
+import modelo.tipos.Efeito;
 
 public abstract class CardMonstro extends Card{
 	
-	protected int nivel;
-	protected int ATK;
-	protected int DEF;
-	protected AtributoCard atributoCard;
-	protected TipoCard tipoCard;
-	protected Posicao posicao;
-	public enum AtributoCard{Terra, Trevas, Agua, Vento, Luz}
-	public enum TipoCard{Anjo, Aqua, Besta, BestaGuerreira, Demonio, Dinossauro, Dragao, Guerreiro, Inseto, Mago, Peixe, Rocha, Zumbi}
+	private int nivel;
+	private int ATK;
+	private int DEF;
+	private Posicao posicao;
+	private Ataque ataque;
+	
+	public CardMonstro(String nome, int nivel, int numero, int ATK, int DEF, String descricao) {
+		super(nome, numero, descricao);
+		this.nivel = nivel;
+		this.ATK = ATK;
+		this.DEF = DEF;
+		this.ataque = new AtaqueNaoRealizado(this);
+	}
 	
 	public int getNivel() {
 		return this.nivel;
@@ -34,21 +45,35 @@ public abstract class CardMonstro extends Card{
 		this.DEF = DEF;
 	}
 	
-	public AtributoCard getAtributoCard() {
-		return this.atributoCard;
+	public void mudaAtaque(Ataque ataque) {
+		this.ataque = ataque;
 	}
 	
-	public abstract TipoCard getTipoCard();
+	public Ataque getAtaque() {
+		return this.ataque;
+	}
+	
+	public void mudaParaAtaqueRealizado() throws ExcecaoAtaque {
+		ataque.mudaParaAtaqueRealizado();
+	}
+	
+	public void mudaParaAtaqueNaoRealizado() throws ExcecaoAtaque {
+		ataque.mudaParaAtaqueNaoRealizado();
+	}
+	
+	public void mudaParaPosicaoAtaque() throws ExcecaoPosicao {
+		posicao.mudaParaPosicaoAtaque();
+	}
+	
+	public void mudaParaPosicaoDefesa() throws ExcecaoPosicao {
+		posicao.mudaParaPosicaoDefesa();
+	}
 	
 	public void mudaPosicao(Posicao posicao) {
 		this.posicao = posicao;
 	}
 	
-	public void posicaoAtaque() throws ExcecaoPosicao {
-		posicao.mudaParaPosicaoAtaque();
-	}
-	
-	public void posicaoDefesa() throws ExcecaoPosicao {
-		posicao.mudaParaPosicaoDefesa();
+	public Posicao getPosicao() {
+		return this.posicao;
 	}
 }

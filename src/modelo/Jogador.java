@@ -3,18 +3,24 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jogador {
+import excecoes.ExcecaoLimite;
+import interfaces.Limite;
+import modelo.estados.LimiteNaoExcedido;
+
+public class Jogador extends Player {
 	
 	private int pontosDeVida;
 	private List<Card> deckCards;
 	private List<CardMonstroFusao> deckFusaoJogador;
+	public Limite limite;
 	
 	//public Jogador jogador;
 	
-	public Jogador() {
+	public Jogador(List<CardMonstroFusao> deckFusaoJogador) {
 		pontosDeVida = 8000;
 		deckCards = new ArrayList<>();
-		deckFusaoJogador = new ArrayList<>();
+		this.deckFusaoJogador = deckFusaoJogador;
+		this.mudaLimite(new LimiteNaoExcedido(this));
 	}
 	
 //	public Jogador getInstance() {
@@ -30,10 +36,6 @@ public class Jogador {
 	
 	public void setCarta(Card card) {
 		this.deckCards.add(card);
-	}
-	
-	public void setDeckFusao(List<CardMonstroFusao> deckFusao){
-		this.deckFusaoJogador = deckFusao;
 	}
 	
 	public void setPontosDeVida(int pontosDeVida) {
@@ -54,6 +56,22 @@ public class Jogador {
 	
 	public int getPontosDeVida() {
 		return this.pontosDeVida;
+	}
+	
+	public void mudaLimite(Limite limite) {
+		this.limite = limite;
+	}
+	
+	public Limite getLimite() {
+		return this.limite;
+	}
+	
+	public void mudaParaLimiteExcedido() throws ExcecaoLimite {
+		limite.mudaParaLimiteExcedido();
+	}
+	
+	public void mudaParaLimiteNaoExcedido() throws ExcecaoLimite {
+		limite.mudaParaLimiteNaoExcedido();
 	}
 
 }

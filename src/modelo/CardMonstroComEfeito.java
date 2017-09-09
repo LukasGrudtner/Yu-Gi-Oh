@@ -6,22 +6,14 @@ public class CardMonstroComEfeito extends CardMonstro {
 	
 	private Efeito efeito;
 	
-	public CardMonstroComEfeito(String nome, int nivel, AtributoCard atributoCard, TipoCard tipoCard, Efeito efeito, int numero, int ATK, int DEF, String descricao) {
-		this.nome = nome;
-		this.nivel = nivel;
-		this.atributoCard = atributoCard;
-		this.tipoCard = tipoCard;
+	public CardMonstroComEfeito(String nome, int nivel, Efeito efeito, int numero, int ATK, int DEF, String descricao) {
+		super(nome, nivel, numero, ATK, DEF, descricao);
 		this.efeito = efeito;
-		this.numero = numero;
-		this.ATK = ATK;
-		this.DEF = DEF;
-		this.descricao = descricao;
-		this.face = face;
 	}
-
-	@Override
-	public TipoCard getTipoCard() {
-		return this.tipoCard;
-	}
+//
+//	@Override
+//	public TipoCard getTipoCard() {
+//		return this.tipoCard;
+//	}
 
 }

@@ -1,4 +1,4 @@
-package modelo.estados.estadosCarta;
+package modelo.estados.estadosCard;
 
 import excecoes.ExcecaoPosicao;
 import excecoes.ExcecaoPosicaoDefesa;
@@ -16,7 +16,7 @@ public class PosicaoDefesa implements Posicao {
 
 	@Override
 	public void mudaParaPosicaoAtaque() {
-		this.cardMonstro.mudaPosicao(new PosicaoAtaque(this.cardMonstro));
+		((CardMonstro) this.cardMonstro).mudaPosicao(new PosicaoAtaque(this.cardMonstro));
 	}
 
 	@Override
