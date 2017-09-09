@@ -31,15 +31,14 @@ public class Controle {
 		gerenciador.defineCartasJogador();
 		gerenciador.defineCartasCPU();
 		campoDeBatalha = new CampoDeBatalha(jogador.getDeck(), jogador.getDeckFusao(), computador.getDeck(), computador.getDeckFusao());
+		interfaceGrafica = new InterfaceGrafica(campoDeBatalha);
+		campoDeBatalha.setInicioJogo();
 		efeitoCardsMagia = new EfeitoCardsMagia(jogador, computador, campoDeBatalha);
 		gerenciador.setCampoDeBatalha(campoDeBatalha);
-		interfaceGrafica = new InterfaceGrafica(campoDeBatalha);
+		campoDeBatalha.setInterfaceGrafica(interfaceGrafica);
 	}
 	
 	public static void main(String[] args) {
 		new Controle();
 	}
-		
-		
-
 }

@@ -2,7 +2,7 @@ package modelo;
 
 import excecoes.ExcecaoFace;
 import interfaces.Face;
-import interfaces.Modo;
+import interfaces.Posicao;
 
 public abstract class Card {
 	

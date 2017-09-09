@@ -1,7 +1,7 @@
 package modelo;
 
-import excecoes.ExcecaoModo;
-import interfaces.Modo;
+import excecoes.ExcecaoPosicao;
+import interfaces.Posicao;
 
 public abstract class CardMonstro extends Card{
 	
@@ -10,7 +10,7 @@ public abstract class CardMonstro extends Card{
 	protected int DEF;
 	protected AtributoCard atributoCard;
 	protected TipoCard tipoCard;
-	protected Modo modo;
+	protected Posicao posicao;
 	public enum AtributoCard{Terra, Trevas, Agua, Vento, Luz}
 	public enum TipoCard{Anjo, Aqua, Besta, BestaGuerreira, Demonio, Dinossauro, Dragao, Guerreiro, Inseto, Mago, Peixe, Rocha, Zumbi}
 	
@@ -40,15 +40,15 @@ public abstract class CardMonstro extends Card{
 	
 	public abstract TipoCard getTipoCard();
 	
-	public void mudaModo(Modo modo) {
-		this.modo = modo;
+	public void mudaPosicao(Posicao posicao) {
+		this.posicao = posicao;
 	}
 	
-	public void modoAtaque() throws ExcecaoModo {
-		modo.mudaParaModoAtaque();
+	public void posicaoAtaque() throws ExcecaoPosicao {
+		posicao.mudaParaPosicaoAtaque();
 	}
 	
-	public void modoDefesa() throws ExcecaoModo {
-		modo.mudaParaModoDefesa();
+	public void posicaoDefesa() throws ExcecaoPosicao {
+		posicao.mudaParaPosicaoDefesa();
 	}
 }

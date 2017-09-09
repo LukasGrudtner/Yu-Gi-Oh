@@ -65,8 +65,8 @@ public class EfeitoCardsMagia {
 		String monstrosComputador = "";
 		for(int i = 0; i < campoDeBatalha.getCardsMonstrosDoCampoDoComputador().size(); i++) {
 			monstrosComputador += "Nome: " + campoDeBatalha.getCardsMonstrosDoCampoDoComputador().get(i).getNome() + "\n"
-						+ "Ataque: " + campoDeBatalha.getCardsMonstrosDoCampoDoComputador().get(i).getATK()
-						+ " | Defesa: " + campoDeBatalha.getCardsMonstrosDoCampoDoComputador().get(i).getDEF() + "\n";
+						+ "Ataque: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoComputador().get(i)).getATK()
+						+ " | Defesa: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoComputador().get(i)).getDEF() + "\n";
 		}
 		
 		// Pergunta ao jogador qual monstro ele deseja destruir
@@ -76,8 +76,8 @@ public class EfeitoCardsMagia {
 		String monstrosJogador = "";
 		for(int i = 0; i < campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size(); i++) {
 			monstrosJogador += "Nome: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getNome() + "\n"
-							+ "Ataque: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getATK()
-							+ " | Defesa: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getATK() + "\n";
+							+ "Ataque: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getATK()
+							+ " | Defesa: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getDEF() + "\n";
 		}
 		
 		// Pergunta ao jogador qual monstro ele deseja conceder o controle
@@ -107,8 +107,8 @@ public class EfeitoCardsMagia {
 		String monstrosJogador = "";
 		for(int i = 0; i < campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size(); i++) {
 			monstrosJogador += "Nome: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getNome() + "\n"
-							+ "Ataque: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getATK()
-							+ " | Defesa: " + campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getATK() + "\n";
+							+ "Ataque: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getATK()
+							+ " | Defesa: " + ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getDEF() + "\n";
 		}
 		
 		String escolhaMonstroJogador = JOptionPane.showInputDialog("Escolha 1 monstro seu para ganhar 700 de atk e 700 de def: " + "\n\n" + monstrosJogador);
@@ -116,11 +116,11 @@ public class EfeitoCardsMagia {
 		// Seta o ATK e DEF da carta escolhida no ATK/DEF atual + 700
 		for(int i = 0; i < campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size(); i++) {
 			if(campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getNome().equals(escolhaMonstroJogador)) {
-				int ATKAtual = campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getATK();
-				int DEFAtual = campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).getDEF();
+				int ATKAtual = ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getATK();
+				int DEFAtual = ((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).getDEF();
 				
-				campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).setATK(ATKAtual + 700);
-				campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i).setDEF(DEFAtual + 700); 
+				((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).setATK(ATKAtual + 700);
+				((CardMonstro) campoDeBatalha.getCardsMonstrosDoCampoDoJogador().get(i)).setDEF(DEFAtual + 700); 
 			}
 		}
 		
@@ -138,7 +138,7 @@ public class EfeitoCardsMagia {
 			campoDeBatalha.adicionaCardDaMaoDoJogadorAoCemiterio(i);
 		}
 		for(int i = 0; i < maoJogador; i++) {
-			campoDeBatalha.compraCardJogador();
+			campoDeBatalha.addCardMaoJogador();
 		}
 		
 		int maoComputador = campoDeBatalha.getMaoComputador().size();
@@ -146,7 +146,7 @@ public class EfeitoCardsMagia {
 			campoDeBatalha.adicionaCardDaMaoDoComputadorAoCemiterio(i);
 		}
 		for(int i = 0; i < maoComputador; i++) {
-			campoDeBatalha.compraCardComputador();
+			campoDeBatalha.addCardMaoCPU();
 		}
 	}
 	
@@ -185,13 +185,13 @@ public class EfeitoCardsMagia {
 	public void PoteDaGanancia() {
 		// Compre 2 cards.
 		if(campoDeBatalha.getTurno() instanceof TurnoJogador){
-			campoDeBatalha.compraCardJogador();
-			campoDeBatalha.compraCardJogador();
+			campoDeBatalha.addCardMaoJogador();
+			campoDeBatalha.addCardMaoJogador();
 		}
 		
 		if(campoDeBatalha.getTurno() instanceof TurnoComputador) {
-			campoDeBatalha.compraCardComputador();
-			campoDeBatalha.compraCardComputador();
+			campoDeBatalha.addCardMaoCPU();
+			campoDeBatalha.addCardMaoCPU();
 		}
 	}
 	

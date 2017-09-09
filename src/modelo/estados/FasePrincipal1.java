@@ -19,7 +19,6 @@ public class FasePrincipal1 implements Fase {
 		//permite o jogador do turno invocar 1 card monstro e cards magia/armadilha
 	}
 
-
 	public void compraCard() {
 
 		if (campoDeBatalha.getTurno() instanceof TurnoJogador)
@@ -30,8 +29,8 @@ public class FasePrincipal1 implements Fase {
 	}
 
 	@Override
-	public void mudaParaFasePrincipal1() throws ExcecaoFasePrincipal1 {
-		throw new ExcecaoFasePrincipal1();
+	public void mudaParaFasePrincipal1() {
+		this.campoDeBatalha.mudaFase(new FasePrincipal1(this.campoDeBatalha));
 	}
 
 	@Override

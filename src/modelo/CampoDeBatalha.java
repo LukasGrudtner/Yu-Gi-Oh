@@ -1,7 +1,11 @@
 package modelo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import javax.swing.JOptionPane;
 
 import excecoes.ExcecaoFase;
 import excecoes.ExcecaoTurno;
@@ -10,54 +14,76 @@ import interfaces.Turno;
 import modelo.estados.FasePrincipal1;
 import modelo.estados.TurnoComputador;
 import modelo.estados.TurnoJogador;
+import visao.InterfaceGrafica;
 
 public class CampoDeBatalha {
+	
+	InterfaceGrafica ig;
 	
 	//Cartas do Jogador
 	private List<Card> deckJogador;
 	private List<Card> cemiterioJogador;
 	private List<CardMonstroFusao> deckFusaoJogador;
-	private List<Card> cardsMagiaEArmadilhaJogador;
-	private List<CardMonstro> cardsMonstrosJogador;
+	private Map<Integer, Card> cardsMagiaEArmadilhaJogador;
+	private Map<Integer, Card> cardsMonstrosJogador;
 	private List<Card> maoJogador;
 	private int pontosVidaJogador;
+	
 	//Cartas do Computador
-	private List<Card> deckCPU;
+	private List<Card> deckComputador;
 	private List<Card> cemiterioComputador;
-	private List<CardMonstroFusao> deckFusaoCPU;
-	private List<Card> cardsMagiaEArmadilhaCPU;
-	private List<CardMonstro> cardsMonstrosCPU;
-	private List<Card> maoCPU;
-	private int pontosVidaCPU;
+	private List<CardMonstroFusao> deckFusaoComputador;
+	private Map<Integer, Card> cardsMagiaEArmadilhaComputador;
+	private Map<Integer, Card> cardsMonstrosComputador;
+	private List<Card> maoComputador;
+	private int pontosVidaComputador;
 	
 	private int round;
 	
 	private Fase fase;
 	private Turno turno;
 	
+	private boolean primeiroTurno = true;
+	
 	public CampoDeBatalha(List<Card> arrayDeckJogador, List<CardMonstroFusao> arrayDeckFusaoJogador, List<Card> arrayDeckCPU, List<CardMonstroFusao> arrayDeckFusaoCPU) {
 		this.deckJogador = arrayDeckJogador;
 		this.deckFusaoJogador = arrayDeckFusaoJogador;
 		this.cemiterioJogador = new ArrayList<Card>();
-		this.cardsMagiaEArmadilhaJogador = new ArrayList<Card>();
-		this.cardsMonstrosJogador = new ArrayList<CardMonstro>();
+		this.cardsMagiaEArmadilhaJogador = new HashMap<Integer, Card>();
+		this.cardsMonstrosJogador = new HashMap<Integer, Card>();
 		this.maoJogador = new ArrayList<Card>();
 		this.pontosVidaJogador = 8000;
 		
-		this.deckCPU = arrayDeckCPU;
-		this.deckFusaoCPU = arrayDeckFusaoCPU;
+		this.deckComputador = arrayDeckCPU;
+		this.deckFusaoComputador = arrayDeckFusaoCPU;
 		this.cemiterioComputador = new ArrayList<Card>();
-		this.cardsMagiaEArmadilhaCPU = new ArrayList<Card>();
-		this.cardsMonstrosCPU = new ArrayList<CardMonstro>();
-		this.maoCPU = new ArrayList<Card>();
-		this.pontosVidaCPU = 8000;
+		this.cardsMagiaEArmadilhaComputador = new HashMap<Integer, Card>();
+		this.cardsMonstrosComputador = new HashMap<Integer, Card>();
+		this.maoComputador = new ArrayList<Card>();
+		this.pontosVidaComputador = 8000;
 		
+//		this.turno = new TurnoJogador(this);
+//		this.fase = new FasePrincipal1(this);
+	}
+	
+	public void refreshInterfaceGrafica() {
+		ig.refresh();
+	}
+	
+	public void setInicioJogo() {
 		this.turno = new TurnoJogador(this);
 		this.fase = new FasePrincipal1(this);
 	}
 	
-	public void embaralhaCards() {
-		
+	public void setInterfaceGrafica(InterfaceGrafica interfaceGrafica) {
+		this.ig = interfaceGrafica;
+	}
+	
+	public Card retornaCartaPeloNome(String nomeCard) {
+		for(int i = 0; i < getMaoJogador().size(); i++)
+			if(nomeCard.equals(maoJogador.get(i).getNome()))
+				return getMaoJogador().get(i);
+		return null;
 	}
 	
 	public void trocaTurno() {
@@ -98,8 +124,27 @@ public class CampoDeBatalha {
 	
 	public void addCardMaoCPU() {
 		int indice = this.getDeckJogador().size() - 1;
-		this.maoCPU.add(this.getDeckCPU().get(indice));
+		this.maoComputador.add(this.getDeckCPU().get(indice));
 		this.removeCardDeckCPU(indice);
+	}
+	
+	public void addCardMaoJogadorNaInterfaceGrafica() {
+		ig.apagaMaoJogador();
+		int x = 1045;
+		if(this.getMaoJogador().size() < 8)
+			for(int i = 0; i < this.getMaoJogador().size(); i++) {
+				ig.criaBotaoCardMao(x, 670, this.getMaoJogador().get(i), i);
+				x -= 140;
+				ig.refresh();
+			}
+	}
+	
+	public int retornaPosicaoCardNaMaoJogador(String nomeCard) {
+		for(int i = 0; i < this.maoJogador.size(); i++) {
+			if(this.maoJogador.get(i).getNome().equals(nomeCard))
+				return i;
+		}
+		return 0;
 	}
 	
 	public List<Card> getDeckJogador() {
@@ -107,7 +152,7 @@ public class CampoDeBatalha {
 	}
 	
 	public List<Card> getDeckCPU() {
-		return this.deckCPU;
+		return this.deckComputador;
 	}
 	
 	public List<Card> getMaoJogador() {
@@ -115,7 +160,7 @@ public class CampoDeBatalha {
 	}
 	
 	public List<Card> getMaoComputador() {
-		return this.maoCPU;
+		return this.maoComputador;
 	}
 	
 	public void removeCardDeckJogador(int indice) {
@@ -123,7 +168,7 @@ public class CampoDeBatalha {
 	}
 	
 	public void removeCardDeckCPU(int indice) {
-		this.deckCPU.remove(indice);
+		this.deckComputador.remove(indice);
 	}
 	
 	public void mudaParaFasePrincipal1() throws ExcecaoFase {
@@ -168,21 +213,21 @@ public class CampoDeBatalha {
 	}
 	
 	public void removeTodosOsCardsMonstrosNoCampoDoComputador() {
-		for(int i = 0; i < this.cardsMonstrosCPU.size(); i++) {
-			this.cardsMonstrosCPU.remove(i);
+		for(int i = 0; i < this.cardsMonstrosComputador.size(); i++) {
+			this.cardsMonstrosComputador.remove(i);
 		}
 	}
 	
-	public List<CardMonstro> getCardsMonstrosDoCampoDoJogador() {
+	public Map<Integer, Card> getCardsMonstrosDoCampoDoJogador() {
 		return this.cardsMonstrosJogador;
 	}
 	
-	public List<CardMonstro> getCardsMonstrosDoCampoDoComputador() {
-		return this.cardsMonstrosCPU;
+	public Map<Integer, Card> getCardsMonstrosDoCampoDoComputador() {
+		return this.cardsMonstrosComputador;
 	}
 	
 	public void removeCardMonstroComputador(int indice) {
-		this.cardsMonstrosCPU.remove(indice);
+		this.cardsMonstrosComputador.remove(indice);
 	}
 	
 	public void removeCardMonstroJogador(int indice) {
@@ -190,7 +235,11 @@ public class CampoDeBatalha {
 	}
 	
 	public void adicionaCardMonstroDoJogadorAosCardsMonstrosDoComputadorNoCampo(int indice) {
-		this.cardsMonstrosCPU.add(this.cardsMonstrosJogador.get(indice));
+		for(int i = 0; i < this.cardsMonstrosComputador.size(); i++)
+			if(this.cardsMonstrosComputador.get(i) == null) {
+				this.cardsMonstrosComputador.put(indice, this.cardsMonstrosJogador.get(indice));
+				break;
+			}
 	}
 	
 	public void adicionaCardDaMaoDoJogadorAoCemiterio(int indice) {
@@ -198,19 +247,59 @@ public class CampoDeBatalha {
 		this.maoJogador.remove(indice);
 	}
 	
+	int xAtaque = 485;
+	public void adicionaCardMonstroDaMaoDoJogadorAoCampoPosicaoAtaque(int indice) {
+		for(int i = 0; i < 5; i++) {
+			
+			if(this.cardsMonstrosJogador.get(i) == null) {
+					this.cardsMonstrosJogador.put(i, this.maoJogador.get(indice));
+					ig.criaBotaoCardMonstroAtaque(xAtaque, 380, this.cardsMonstrosJogador.get(i));
+					this.maoJogador.remove(indice);
+					xAtaque += 140;
+					xDefesa += 140;
+					break;
+			}
+		}
+	}
+	
+	int xDefesa = 460;
+	public void adicionaCardMonstroDaMaoDoJogadorAoCampoPosicaoDefesa(int indice) {
+		for(int i = 0; i < 5; i++) {
+			
+			if(this.cardsMonstrosJogador.get(i) == null) {
+					this.cardsMonstrosJogador.put(i, this.maoJogador.get(indice));
+					ig.criaBotaoCardMonstroDefesa(xDefesa, 400, this.cardsMonstrosJogador.get(i));
+					this.maoJogador.remove(indice);
+					xDefesa += 140;
+					xAtaque += 140;
+					break;
+			}
+		}
+	}
+	
+	public void adicionaCardMonstroDaMaoDoComputadorAoCampo(int indice) {
+		for(int i = 0; i < this.cardsMonstrosComputador.size(); i++)
+			if(this.cardsMonstrosComputador.get(i) == null) {
+				this.cardsMonstrosComputador.put(i, (CardMonstro) this.maoJogador.get(indice));
+				this.maoComputador.remove(indice);
+				break;
+			}
+	}
+	
 	public void adicionaCardDaMaoDoComputadorAoCemiterio(int indice) {
-		this.cemiterioComputador.add(this.maoCPU.get(indice));
-		this.maoCPU.remove(indice);
+		this.cemiterioComputador.add(this.maoComputador.get(indice));
+		this.maoComputador.remove(indice);
 	}
 	
-	public void compraCardJogador() {
-		this.maoJogador.add(this.deckJogador.get(this.deckJogador.size() - 1));
-		this.deckJogador.remove(this.deckJogador.size() - 1);
+	public void compra5CardsInicio() {
+		if(this.primeiroTurno == true) {
+			for(int i = 0; i < 5; i++) {	
+				addCardMaoJogador();
+				addCardMaoCPU();
+			}
+			this.primeiroTurno = false;
+		}
 	}
 	
-	public void compraCardComputador() {
-		this.maoCPU.add(this.deckCPU.get(this.deckCPU.size() - 1));
-		this.deckCPU.remove(this.deckCPU.size() - 1);
-	}
 
 }

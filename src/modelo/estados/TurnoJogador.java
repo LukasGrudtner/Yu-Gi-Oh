@@ -13,6 +13,8 @@ public class TurnoJogador implements Turno {
 	
 	public TurnoJogador(CampoDeBatalha campoDeBatalha) {
 		this.campoDeBatalha = campoDeBatalha;
+		campoDeBatalha.compra5CardsInicio();
+		System.out.println("Turno Jogador");
 	}
 
 	@Override
