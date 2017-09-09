@@ -1,6 +1,5 @@
 package modelo.estados.estadosInvocacao;
 
-import excecoes.ExcecaoInvocacao;
 import excecoes.ExcecaoMonstroInvocado;
 import interfaces.Invocacao;
 import modelo.CampoDeBatalha;

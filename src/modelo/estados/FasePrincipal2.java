@@ -1,8 +1,6 @@
 package modelo.estados;
 
-import excecoes.ExcecaoFase;
 import excecoes.ExcecaoFasePrincipal2;
-import excecoes.ExcecaoTurno;
 import interfaces.Fase;
 import modelo.CampoDeBatalha;
 
@@ -12,9 +10,6 @@ public class FasePrincipal2 implements Fase {
 	
 	public FasePrincipal2(CampoDeBatalha campoDeBatalha) {
 		this.campoDeBatalha = campoDeBatalha;
-		// permite ao jogador invocar 1 card monstro(caso ele não o tenha feito na P1)
-		// e invocar qnts cards magia e armadilha quiser
-		// verificar efeitos que são ativados na P2
 	}
 
 	@Override

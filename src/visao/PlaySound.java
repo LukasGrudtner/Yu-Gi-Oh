@@ -17,7 +17,6 @@ public class PlaySound {
 			clip  = AudioSystem.getClip();
 			clip.open(audioInputStream);
 			clip.start();
-			new TimerSound(this, 1);
 		} catch (Exception ex) {
 			System.out.println("Erro ao executar SOM!");
 			ex.printStackTrace();

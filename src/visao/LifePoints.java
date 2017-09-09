@@ -1,6 +1,7 @@
 package visao;
 
 import java.awt.Component;
+import java.io.File;
 
 public class LifePoints extends Thread {
 

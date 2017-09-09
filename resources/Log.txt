@@ -1,4 +1,4 @@
-### Versão 4 ###
+### Versão Final ###
 
 * Novos métodos na Interface Gráfica e no Campo de Batalha.
 

@@ -1,7 +1,5 @@
 package modelo.estados.estadosCard.estadosCardMonstro;
 
-import excecoes.ExcecaoAtaque;
-import excecoes.ExcecaoAtaqueNaoRealizado;
 import interfaces.Ataque;
 import modelo.CardMonstro;
 

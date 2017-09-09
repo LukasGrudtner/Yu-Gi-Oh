@@ -5,33 +5,29 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
-import modelo.CampoDeBatalha;
+import controle.Controle;
 import modelo.Card;
-import modelo.estados.LimiteExcedido;
-import modelo.estados.TurnoComputador;
-import modelo.estados.TurnoJogador;
 import modelo.estados.estadosCard.FaceParaBaixo;
 
 public class JanelaDescartarCard extends JFrame {
 
+	private static final long serialVersionUID = 1L;
 	JButton botaoDescartar, botaoJogar;
-	CampoDeBatalha campoDeBatalha;
+	Controle controle;
 	Card card;
 	int x, y;
 	int yJanela;
 
 	public JanelaDescartarCard() {
 		super("Decartar");
-		// dispose();
 	}
 
-	public void iniciaJanela(int x, int y, CampoDeBatalha campoDeBatalha, Card card) {
+	public void iniciaJanela(int x, int y, Controle controle, Card card) {
 		this.x = x;
 		this.y = y;
 
-		this.campoDeBatalha = campoDeBatalha;
+		this.controle = controle;
 		this.card = card;
 
 		criaBotaoDescartarCard();
@@ -46,8 +42,7 @@ public class JanelaDescartarCard extends JFrame {
 	}
 
 	private void criaBotaoDescartarCard() {
-		if (campoDeBatalha.getJogador().getLimite() instanceof LimiteExcedido
-				|| campoDeBatalha.getComputador().getLimite() instanceof LimiteExcedido) {
+		if (controle.verificaSeLimiteDoJogadorFoiExcedido() || controle.verificaSeLimiteDoComputadorFoiExcedido()) {
 
 			botaoDescartar = new JButton("Descartar");
 			botaoDescartar.setSize(100, 30);
@@ -57,17 +52,15 @@ public class JanelaDescartarCard extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (campoDeBatalha.getTurno() instanceof TurnoJogador) {
-						campoDeBatalha.adicionaCardDaMaoDoJogadorAoCemiterio(
-								campoDeBatalha.retornaPosicaoCardNaMaoJogador(card.getNome()));
-						campoDeBatalha.mudaParaLimiteNaoExcedidoJogador();
-						campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
+					if (controle.verificaTurnoJogador()) {
+						controle.adicionaCardDaMaoDoJogadorAoCemiterio(controle.retornaPosicaoCardNaMaoJogador(card.getNome()));
+						controle.mudaParaLimiteNaoExcedidoJogador();
+						controle.addCardMaoJogadorNaInterfaceGrafica();
 					}
-					if (campoDeBatalha.getTurno() instanceof TurnoComputador) {
-						campoDeBatalha.adicionaCardDaMaoDoComputadorAoCemiterio(
-								campoDeBatalha.retornaPosicaoCardNaMaoComputador(card.getNome()));
-						campoDeBatalha.mudaParaLimiteNaoExcedidoComputador();
-						campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
+					if (controle.verificaTurnoComputador()) {
+						controle.adicionaCardDaMaoDoComputadorAoCemiterio(controle.retornaPosicaoCardNaMaoComputador(card.getNome()));
+						controle.mudaParaLimiteNaoExcedidoComputador();
+						controle.addCardMaoComputadorNaInterfaceGrafica();
 					}
 
 					dispose();
@@ -88,15 +81,13 @@ public class JanelaDescartarCard extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				card.mudaFace(new FaceParaBaixo(card));
-				if (campoDeBatalha.getTurno() instanceof TurnoJogador) {
-					campoDeBatalha.adicionaCardDaMaoDoJogadorAoCampo(
-							campoDeBatalha.retornaPosicaoCardNaMaoJogador(card.getNome()), x, y, card);
-					campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
+				if (controle.verificaTurnoJogador()) {
+					controle.adicionaCardDaMaoDoJogadorAoCampo(controle.retornaPosicaoCardNaMaoJogador(card.getNome()), x, y, card);
+					controle.addCardMaoJogadorNaInterfaceGrafica();
 				}
-				if (campoDeBatalha.getTurno() instanceof TurnoComputador) {
-					campoDeBatalha.adicionaCardDaMaoDoComputadorAoCampo(
-							campoDeBatalha.retornaPosicaoCardNaMaoComputador(card.getNome()), x, y, card);
-					campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
+				if (controle.verificaTurnoComputador()) {
+					controle.adicionaCardDaMaoDoComputadorAoCampo(controle.retornaPosicaoCardNaMaoComputador(card.getNome()), x, y, card);
+					controle.addCardMaoComputadorNaInterfaceGrafica();
 				}
 				dispose();
 			}
@@ -112,7 +103,6 @@ public class JanelaDescartarCard extends JFrame {
 		setSize(100, 60);
 		setResizable(true);
 		setLocation(x, y);
-		// this.pack();
 	}
 
 }

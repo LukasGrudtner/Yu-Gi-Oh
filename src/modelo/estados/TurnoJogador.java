@@ -1,9 +1,6 @@
 package modelo.estados;
 
-import javax.swing.JOptionPane;
-
 import modelo.CampoDeBatalha;
-import excecoes.ExcecaoTurno;
 import excecoes.ExcecaoTurnoJogador;
 import interfaces.Turno;
 

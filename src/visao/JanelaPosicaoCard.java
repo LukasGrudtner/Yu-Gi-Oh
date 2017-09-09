@@ -2,25 +2,16 @@ package visao;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import excecoes.ExcecaoFace;
-import excecoes.ExcecaoInvocacao;
-import excecoes.ExcecaoPosicao;
-import modelo.CampoDeBatalha;
+import controle.Controle;
 import modelo.Card;
 import modelo.CardMonstro;
-import modelo.CardMonstroSemEfeito;
 import modelo.estados.LimiteExcedido;
-import modelo.estados.TurnoComputador;
-import modelo.estados.TurnoJogador;
 import modelo.estados.estadosCard.FaceParaBaixo;
 import modelo.estados.estadosCard.FaceParaCima;
 import modelo.estados.estadosCard.PosicaoAtaque;
@@ -32,7 +23,7 @@ public class JanelaPosicaoCard extends JFrame {
 
 	JButton botaoPosicaoAtaque, botaoPosicaoDefesa, botaoDescartar;
 	JPanel painel;
-	CampoDeBatalha campoDeBatalha;
+	Controle controle;
 	Card card;
 	int x, y;
 	int alturaJanela, alturaBotaoDescartar;
@@ -41,11 +32,11 @@ public class JanelaPosicaoCard extends JFrame {
 		super("Posição Card");
 	}
 
-	public void iniciaJanela(int x, int y, CampoDeBatalha campoDeBatalha, Card card) {
+	public void iniciaJanela(int x, int y, Controle controle, Card card) {
 		this.x = x;
 		this.y = y;
 
-		this.campoDeBatalha = campoDeBatalha;
+		this.controle = controle;
 		this.card = card;
 		painel = new JPanel();
 
@@ -58,7 +49,7 @@ public class JanelaPosicaoCard extends JFrame {
 	}
 
 	private void criaBotaoPosicaoDefesa(Card card) {
-		if ((campoDeBatalha.getTurno() instanceof TurnoJogador && campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size() < 5) || (campoDeBatalha.getTurno() instanceof TurnoComputador && campoDeBatalha.getCardsMonstrosDoCampoDoComputador().size() < 5)) {
+		if ((controle.verificaTurnoJogador() && controle.getNumCardsMonstrosDoCampoDoJogador() < 5) || (controle.verificaTurnoComputador() && controle.getNumCardsMonstrosDoCampoDoComputador() < 5)) {
 						
 			botaoPosicaoDefesa = new JButton("Posição de Defesa");
 			botaoPosicaoDefesa.setSize(150, 30);
@@ -68,7 +59,7 @@ public class JanelaPosicaoCard extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if (campoDeBatalha.getInvocacao() instanceof MonstroInvocado)
+					if (controle.getInvocacao() instanceof MonstroInvocado)
 						dispose();
 					else {
 						PlaySound p = new PlaySound();
@@ -76,27 +67,15 @@ public class JanelaPosicaoCard extends JFrame {
 						dispose();
 						card.mudaFace(new FaceParaBaixo(card));
 						((CardMonstro) card).mudaPosicao(new PosicaoDefesa((CardMonstro) card));
-						if (campoDeBatalha.getTurno() instanceof TurnoJogador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoJogadorAoCampo(
-									campoDeBatalha.retornaPosicaoCardNaMaoJogador(card.getNome()), x + 50, y + 125,
-									card);
-							try {
-								campoDeBatalha.mudaParaMonstroInvocado();
-							} catch (ExcecaoInvocacao e) {
-							}
-							campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
+						if (controle.verificaTurnoJogador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoJogadorAoCampo(controle.retornaPosicaoCardNaMaoJogador(card.getNome()), x + 50, y + 125,card);
+							controle.mudaParaMonstroInvocado();
+							controle.addCardMaoJogadorNaInterfaceGrafica();
 						}
-						if (campoDeBatalha.getTurno() instanceof TurnoComputador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoComputadorAoCampo(
-									campoDeBatalha.retornaPosicaoCardNaMaoComputador(card.getNome()), x - 50, y - 125,
-									card);
-							campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-							try {
-								campoDeBatalha.mudaParaMonstroInvocado();
-							} catch (ExcecaoInvocacao e) {
-							}
+						if (controle.verificaTurnoComputador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoComputadorAoCampo(controle.retornaPosicaoCardNaMaoComputador(card.getNome()), x - 50, y - 125, card);
+							controle.addCardMaoComputadorNaInterfaceGrafica();
+							controle.mudaParaMonstroInvocado();
 						}
 					}
 				}
@@ -111,7 +90,7 @@ public class JanelaPosicaoCard extends JFrame {
 //		y = y + 60;
 		alturaBotaoDescartar = 0;
 		alturaJanela = 30;
-		if ((campoDeBatalha.getTurno() instanceof TurnoJogador && campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size() < 5) || (campoDeBatalha.getTurno() instanceof TurnoComputador && campoDeBatalha.getCardsMonstrosDoCampoDoComputador().size() < 5)) {		
+		if ((controle.verificaTurnoJogador() && controle.getNumCardsMonstrosDoCampoDoJogador() < 5) || (controle.verificaTurnoComputador() && controle.getNumCardsMonstrosDoCampoDoComputador() < 5)) {		
 			//botaoDescartar.setLocation(botaoDescartar.getX(), 60);
 			alturaJanela = 90;
 //			y = y - 60;
@@ -124,7 +103,7 @@ public class JanelaPosicaoCard extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent arg0) {
-					if (campoDeBatalha.getInvocacao() instanceof MonstroInvocado)
+					if (controle.getInvocacao() instanceof MonstroInvocado)
 						dispose();
 					else {
 						PlaySound p = new PlaySound();
@@ -133,44 +112,29 @@ public class JanelaPosicaoCard extends JFrame {
 						card.mudaFace(new FaceParaCima(card));
 						((CardMonstro) card).mudaPosicao(new PosicaoAtaque((CardMonstro) card));
 
-						if (campoDeBatalha.getTurno() instanceof TurnoJogador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoJogadorAoCampo(
-									campoDeBatalha.retornaPosicaoCardNaMaoJogador(card.getNome()), x + 50, y + 125,
-									card);
-							try {
-								campoDeBatalha.mudaParaMonstroInvocado();
-							} catch (ExcecaoInvocacao e) {
-							}
-							campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
+						if (controle.verificaTurnoJogador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoJogadorAoCampo(controle.retornaPosicaoCardNaMaoJogador(card.getNome()), x + 50, y + 125, card);
+							controle.mudaParaMonstroInvocado();
+							controle.addCardMaoJogadorNaInterfaceGrafica();
 						}
-						if (campoDeBatalha.getTurno() instanceof TurnoComputador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoComputadorAoCampo(
-									campoDeBatalha.retornaPosicaoCardNaMaoComputador(card.getNome()), x - 50, y - 125,
-									card);
-							campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-							try {
-								campoDeBatalha.mudaParaMonstroInvocado();
-							} catch (ExcecaoInvocacao e) {
-							}
+						if (controle.verificaTurnoComputador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoComputadorAoCampo(controle.retornaPosicaoCardNaMaoComputador(card.getNome()), x - 50, y - 125, card);
+							controle.addCardMaoComputadorNaInterfaceGrafica();
+							controle.mudaParaMonstroInvocado();
 						}
 					}
 				}
 
 			});
-			// getContentPane().add(botaoPosicaoAtaque);
 			painel.add(botaoPosicaoAtaque);
 		}
 	}
 
 	private void criaBotaoDescartarCard() {
-//		yBotaoDescartar = 0;
-		if (campoDeBatalha.getInvocacao() instanceof MonstroInvocado)
+		if (controle.getInvocacao() instanceof MonstroInvocado)
 			dispose();
-		if (campoDeBatalha.getJogador().getLimite() instanceof LimiteExcedido || campoDeBatalha.getComputador().getLimite() instanceof LimiteExcedido) {
+		if (controle.getJogador().getLimite() instanceof LimiteExcedido || controle.getComputador().getLimite() instanceof LimiteExcedido) {
 				
-			//yJanela = 30;
 			botaoDescartar = new JButton("Descartar");
 			botaoDescartar.setSize(150, 30);
 			botaoDescartar.setVisible(true);
@@ -179,22 +143,18 @@ public class JanelaPosicaoCard extends JFrame {
 
 				@Override
 				public void actionPerformed(ActionEvent e) {
-					if (campoDeBatalha.getInvocacao() instanceof MonstroInvocado)
+					if (controle.getInvocacao() instanceof MonstroInvocado)
 						dispose();
 					else {
-						if (campoDeBatalha.getTurno() instanceof TurnoJogador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoJogadorAoCemiterio(
-									campoDeBatalha.retornaPosicaoCardNaMaoJogador(card.getNome()));
-							campoDeBatalha.mudaParaLimiteNaoExcedidoJogador();
-							campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
+						if (controle.verificaTurnoJogador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoJogadorAoCemiterio(controle.retornaPosicaoCardNaMaoJogador(card.getNome()));
+							controle.mudaParaLimiteNaoExcedidoJogador();
+							controle.addCardMaoJogadorNaInterfaceGrafica();
 						}
-						if (campoDeBatalha.getTurno() instanceof TurnoComputador
-								&& campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado) {
-							campoDeBatalha.adicionaCardDaMaoDoComputadorAoCemiterio(
-									campoDeBatalha.retornaPosicaoCardNaMaoComputador(card.getNome()));
-							campoDeBatalha.mudaParaLimiteNaoExcedidoComputador();
-							campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
+						if (controle.verificaTurnoComputador() && controle.getInvocacao() instanceof MonstroNaoInvocado) {
+							controle.adicionaCardDaMaoDoComputadorAoCemiterio(controle.retornaPosicaoCardNaMaoComputador(card.getNome()));
+							controle.mudaParaLimiteNaoExcedidoComputador();
+							controle.addCardMaoComputadorNaInterfaceGrafica();
 						}
 
 						dispose();
@@ -202,7 +162,6 @@ public class JanelaPosicaoCard extends JFrame {
 				}
 
 			});
-			// getContentPane().add(botaoDescartar);
 			painel.add(botaoDescartar);
 		}
 	}
@@ -226,7 +185,6 @@ public class JanelaPosicaoCard extends JFrame {
 		setSize(150, alturaJanela);
 		setResizable(true);
 		setLocation(x, y);
-		// this.pack();
 	}
 
 }

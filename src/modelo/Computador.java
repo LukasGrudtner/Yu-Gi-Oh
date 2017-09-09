@@ -13,8 +13,6 @@ public class Computador extends Player {
 	private int pontosDeVida;
 	private List<Card> deckCards;
 	private List<CardMonstroFusao> deckCardsFusao;
-
-	//public Computador computador;
 	
 	public Computador() {
 		pontosDeVida = 8000;
@@ -22,12 +20,6 @@ public class Computador extends Player {
 		deckCardsFusao = new ArrayList<>();
 		this.mudaLimite(new LimiteNaoExcedido(this));
 	}
-	
-//	public Computador getInstance() {
-//		if(computador == null)
-//			computador = new Computador();
-//		return computador;
-//	}
 	
 	public void setDeck(List<Card> deckCards) {
 		this.deckCards = deckCards;

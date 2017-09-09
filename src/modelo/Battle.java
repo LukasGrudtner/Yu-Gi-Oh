@@ -1,12 +1,9 @@
 package modelo;
 
-import javax.swing.JOptionPane;
-
 import excecoes.ExcecaoAtaque;
 import modelo.estados.TurnoComputador;
 import modelo.estados.TurnoJogador;
 import modelo.estados.estadosCard.PosicaoAtaque;
-import modelo.estados.estadosCard.PosicaoDefesa;
 
 public class Battle {
 

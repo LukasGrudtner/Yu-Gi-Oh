@@ -10,10 +10,5 @@ public class CardMonstroComEfeito extends CardMonstro {
 		super(nome, nivel, numero, ATK, DEF, descricao);
 		this.efeito = efeito;
 	}
-//
-//	@Override
-//	public TipoCard getTipoCard() {
-//		return this.tipoCard;
-//	}
 
 }

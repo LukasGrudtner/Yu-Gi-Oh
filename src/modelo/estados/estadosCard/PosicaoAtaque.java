@@ -1,9 +1,7 @@
 package modelo.estados.estadosCard;
 
-import excecoes.ExcecaoPosicao;
 import excecoes.ExcecaoPosicaoAtaque;
 import interfaces.Posicao;
-import modelo.Card;
 import modelo.CardMonstro;
 
 public class PosicaoAtaque implements Posicao {

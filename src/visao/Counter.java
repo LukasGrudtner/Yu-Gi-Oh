@@ -8,6 +8,8 @@ import javax.swing.JPanel;
 
 public class Counter extends JPanel {
 	
+	private static final long serialVersionUID = 1L;
+	
 	private JLabel counter1, counter2, counter3, counter4;
 	
 	public Counter(int x, int y) {
@@ -46,7 +48,7 @@ public class Counter extends JPanel {
 	}
 	
 	private void criaPainel(int x, int y) {
-		setSize(400, 100);
+		setSize(320, 100);
 		setLocation(x, y);
 		setVisible(true);
 		setOpaque(false);
@@ -54,6 +56,7 @@ public class Counter extends JPanel {
 	}
 	
 	public void startCounter(int lifePoints) {
+		
 		PlaySound p = new PlaySound();
 		p.playSound("resources" + File.separator + "LifeSounds.wav");
 		

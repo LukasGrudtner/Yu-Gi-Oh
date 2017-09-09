@@ -6,31 +6,12 @@ import java.util.List;
 import modelo.Card;
 import modelo.CardArmadilha;
 import modelo.CardMagia;
-import modelo.CardMonstro;
 import modelo.CardMonstroComEfeito;
 import modelo.CardMonstroFusao;
 import modelo.CardMonstroRitual;
 import modelo.CardMonstroSemEfeito;
 import modelo.Tipo;
 import modelo.tipos.Efeito;
-import modelo.tipos.Fusao;
-import modelo.tipos.Monstro;
-import modelo.tipos.Ritual;
-import modelo.tipos.armadilhas.ArmadilhaContinua;
-import modelo.tipos.armadilhas.ArmadilhaNormal;
-import modelo.tipos.armadilhas.ArmadilhaResposta;
-import modelo.tipos.efeitos.EfeitoContinuo;
-import modelo.tipos.efeitos.EfeitoGatilho;
-import modelo.tipos.efeitos.EfeitoIgnicao;
-import modelo.tipos.efeitos.EfeitoRapido;
-import modelo.tipos.efeitos.EfeitoVirar;
-import modelo.tipos.efeitos.SemEfeito;
-import modelo.tipos.magias.MagiaCampo;
-import modelo.tipos.magias.MagiaContinua;
-import modelo.tipos.magias.MagiaEquipamento;
-import modelo.tipos.magias.MagiaNormal;
-import modelo.tipos.magias.MagiaRapida;
-import modelo.tipos.magias.MagiaRitual;
 
 public class ListaCards {
 	
@@ -43,22 +24,17 @@ public class ListaCards {
 	
 	private Efeito efeitoContinuo;
 	private Efeito efeitoGatilho;
-	private Efeito efeitoIgnicao;
 	private Efeito efeitoRapido;
 	private Efeito efeitoVirar;
-	private Efeito semEfeito;
 	
 	private Tipo armadilhaContinua;
 	private Tipo armadilhaNormal;
 	private Tipo armadilhaResposta;
-	private Tipo magiaCampo;
 	private Tipo magiaContinua;
 	private Tipo magiaEquipamento;
 	private Tipo magiaNormal;
 	private Tipo magiaRapida;
 	private Tipo magiaRitual;
-	private Tipo fusao;
-	private Tipo ritual;
 	
 	private List<Card> deckCards;
 	private List<CardMonstroFusao> deckCardsFusao;
@@ -67,37 +43,9 @@ public class ListaCards {
 		deckCards = new ArrayList<>();
 		deckCardsFusao = new ArrayList<>();
 		
-		criaTipos();
-		criaEfeitos();
-		
 		criaCardMonstro();
 		criaCardMagia();
 		criaCardArmadilha();
-	}
-
-	private void criaEfeitos() {
-		efeitoContinuo = new EfeitoContinuo();
-		efeitoGatilho = new EfeitoGatilho();
-		efeitoIgnicao = new EfeitoIgnicao();
-		efeitoRapido = new EfeitoRapido();
-		efeitoVirar = new EfeitoVirar();
-		semEfeito = new SemEfeito();
-	}
-	
-	private void criaTipos() {
-		armadilhaContinua = new ArmadilhaContinua();
-		armadilhaNormal = new ArmadilhaNormal();
-		armadilhaResposta = new ArmadilhaResposta();
-		
-		magiaCampo = new MagiaCampo();
-		magiaContinua = new MagiaContinua();
-		magiaEquipamento = new MagiaEquipamento();
-		magiaNormal = new MagiaNormal();
-		magiaRapida = new MagiaRapida();
-		magiaRitual = new MagiaRitual();
-		
-		fusao = new Fusao();
-		ritual = new Ritual();
 	}
 
 	private void criaCardArmadilha() {
@@ -428,20 +376,6 @@ public class ListaCards {
 	public List<Card> getDeck() {
 		return deckCards;
 	}
-	
-//	public List<Card> embaralhaERetornaDeck() {
-//		List<Card> deckEmbaralhado = new ArrayList<>();
-//		Random gerador = new Random();
-//		
-//		for(int i = deckCards.size(); i > 0; i--) {
-//			int k = gerador.nextInt(i);
-//			deckEmbaralhado.add(deckCards.get(k));
-//			System.out.println(deckCards.get(k).getNome());
-//			deckCards.remove(k);
-//		}
-//		
-//		return deckEmbaralhado;
-//	}
 	
 	public void retornaCards() {
 		for(int i = 0; i < this.deckCards.size(); i++)

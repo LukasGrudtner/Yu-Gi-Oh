@@ -14,21 +14,12 @@ public class Jogador extends Player {
 	private List<CardMonstroFusao> deckFusaoJogador;
 	public Limite limite;
 	
-	//public Jogador jogador;
-	
 	public Jogador(List<CardMonstroFusao> deckFusaoJogador) {
 		pontosDeVida = 8000;
 		deckCards = new ArrayList<>();
 		this.deckFusaoJogador = deckFusaoJogador;
 		this.mudaLimite(new LimiteNaoExcedido(this));
 	}
-	
-//	public Jogador getInstance() {
-//		if(jogador == null)
-//			jogador = new Jogador();
-//		System.out.println("jogador");
-//		return jogador;
-//	}
 	
 	public void setDeck(List<Card> deckCards) {
 		this.deckCards = deckCards;

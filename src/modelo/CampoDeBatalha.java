@@ -1,15 +1,10 @@
 package modelo;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.swing.JOptionPane;
-
+import controle.Controle;
 import excecoes.ExcecaoAtaque;
 import excecoes.ExcecaoFase;
 import excecoes.ExcecaoInvocacao;
@@ -17,22 +12,16 @@ import excecoes.ExcecaoLimite;
 import excecoes.ExcecaoTurno;
 import interfaces.Fase;
 import interfaces.Invocacao;
-import interfaces.Limite;
 import interfaces.Turno;
+import modelo.decks.ListaCards;
 import modelo.estados.FasePrincipal1;
-import modelo.estados.TurnoComputador;
 import modelo.estados.TurnoJogador;
 import modelo.estados.estadosCard.PosicaoAtaque;
 import modelo.estados.estadosCard.PosicaoDefesa;
 import modelo.estados.estadosInvocacao.MonstroNaoInvocado;
-import visao.InteracaoUsuario;
-import visao.InterfaceGrafica;
-import visao.PlaySound;
 
 public class CampoDeBatalha {
 	
-	InteracaoUsuario iu;
-	InterfaceGrafica ig;
 	Jogador jogador;
 	Computador computador;
 	
@@ -54,15 +43,14 @@ public class CampoDeBatalha {
 	private List<Card> maoComputador;
 	private int pontosVidaComputador;
 	
-	private int round;
-	
 	private Fase fase;
 	private Turno turno;
 	private Invocacao invocacao;
-	private Limite limite;
 	
+	private ListaCards listaCards;
 	private Battle battle;
 	private Pontuacao pontuacao;
+	private Controle controle;
 	
 	private Serializacao serializacao;
 	
@@ -71,6 +59,7 @@ public class CampoDeBatalha {
 	public CampoDeBatalha(Jogador jogador, Computador computador, List<Card> arrayDeckJogador, List<CardMonstroFusao> arrayDeckFusaoJogador, List<Card> arrayDeckCPU, List<CardMonstroFusao> arrayDeckFusaoCPU) {
 		this.jogador = jogador;
 		this.computador = computador;
+		this.listaCards = new ListaCards();
 		
 		this.deckJogador = arrayDeckJogador;
 		this.deckFusaoJogador = arrayDeckFusaoJogador;
@@ -78,7 +67,7 @@ public class CampoDeBatalha {
 		this.cardsMagiaEArmadilhaJogador = new HashMap<Integer, Card>();
 		this.cardsMonstrosJogador = new HashMap<Integer, Card>();
 		this.maoJogador = new ArrayList<Card>();
-		this.pontosVidaJogador = 8000;
+		this.pontosVidaJogador = jogador.getPontosDeVida();
 		
 		this.deckComputador = arrayDeckCPU;
 		this.deckFusaoComputador = arrayDeckFusaoCPU;
@@ -86,29 +75,49 @@ public class CampoDeBatalha {
 		this.cardsMagiaEArmadilhaComputador = new HashMap<Integer, Card>();
 		this.cardsMonstrosComputador = new HashMap<Integer, Card>();
 		this.maoComputador = new ArrayList<Card>();
-		this.pontosVidaComputador = 8000;
+		this.pontosVidaComputador = computador.getPontosDeVida();
 		
 		this.serializacao = new Serializacao();
 		this.pontuacao = this.serializacao.abreArquivo();
-		this.iu = new InteracaoUsuario();
 		
 		battle = new Battle(this);
-		//pontuacao.getInstancePontuacao();
 		
 		this.invocacao = new MonstroNaoInvocado(this);
-//		this.turno = new TurnoJogador(this);
-//		this.fase = new FasePrincipal1(this);
+		
+		this.defineCartasJogador();
+		this.defineCartasCPU();
 	}
 	
+	public void setInstanceControle(Controle controle) {
+		this.controle = controle;
+	}
+	
+	public void defineCartasJogador() {
+		listaCards.embaralhaCards();
+		for(int i = 0; i < 50; i++) {
+			jogador.setCarta(listaCards.retornaCarta(i));
+		}
+	}
+	
+	public void defineCartasCPU() {
+		listaCards.embaralhaCards();
+		for(int i = 0; i < 50; i++) {
+			computador.setCarta(listaCards.retornaCarta(i));
+		}
+	}
 	
 	public void setPontosVidaJogador(int pontosVidaJogador) {
-		this.pontosVidaJogador = pontosVidaJogador;
-		ig.atualizaVidaJogador();
+		jogador.setPontosDeVida(pontosVidaJogador);
+		this.pontosVidaJogador = jogador.getPontosDeVida();
+		
+		controle.atualizaVidaJogador();
 	}
 	
 	public void setPontosVidaComputador(int pontosVidaComputador) {
-		this.pontosVidaComputador = pontosVidaComputador;
-		ig.atualizaVidaComputador();
+		computador.setPontosDeVida(pontosVidaComputador);
+		this.pontosVidaComputador = computador.getPontosDeVida();
+		
+		controle.atualizaVidaComputador();
 	}
 	
 	public Jogador getJogador() {
@@ -151,22 +160,18 @@ public class CampoDeBatalha {
 		this.battle.setCardAtacante(cardAtacante);
 	}
 	
-	public void refreshInterfaceGrafica() {
-		ig.refresh();
-	}
-	
 	public int getVidaJogador() {
 		return pontosVidaJogador; 
 	}
 	
 	public void setVidaJogador(int pontosPerdidos) {
 		this.pontosVidaJogador = pontosVidaJogador - pontosPerdidos;
-		ig.atualizaVidaJogador();
+		controle.atualizaVidaJogador();
 		pontuacao.aumentaDanoTomado(pontosPerdidos);
 		if(this.pontosVidaJogador <= 0) {
 			pontuacao.aumentaNumDerrotas();
-			iu.imprimeString("Fim de Jogo \n\nVocê perdeu!");
-			ig.terminaJogo();
+			controle.imprimeString("Fim de Jogo \n\nVocê perdeu!");
+			controle.terminaJogo();
 		}
 	}
 	
@@ -176,12 +181,12 @@ public class CampoDeBatalha {
 	
 	public void setVidaComputador(int pontosPerdidos) {
 		this.pontosVidaComputador = pontosVidaComputador - pontosPerdidos;
-		ig.atualizaVidaComputador();
+		controle.atualizaVidaComputador();
 		pontuacao.aumentaDanoCausado(pontosPerdidos);
 		if(this.pontosVidaComputador <= 0) {
 			pontuacao.aumentaNumVitorias();
-			iu.imprimeString("Fim de Jogo \n\nVocê venceu!");
-			ig.terminaJogo();
+			controle.imprimeString("Fim de Jogo \n\nVocê venceu!");
+			controle.terminaJogo();
 		}
 	}
 	
@@ -210,10 +215,6 @@ public class CampoDeBatalha {
 				}
 			}
 		}
-	}
-	
-	public void setInterfaceGrafica(InterfaceGrafica interfaceGrafica) {
-		this.ig = interfaceGrafica;
 	}
 	
 	public Card retornaCartaPeloNome(String nomeCard) {
@@ -266,29 +267,28 @@ public class CampoDeBatalha {
 	
 	public void addCardMaoCPU() {
 		int indice = this.getDeckJogador().size() - 1;
-		this.maoComputador.add(this.getDeckCPU().get(indice));
+		this.maoComputador.add(this.getDeckComputador().get(indice));
 		this.removeCardDeckComputador(indice);
 	}
 	
 	public void addCardMaoJogadorNaInterfaceGrafica() {
-		ig.apagaMaoJogador();
+		controle.apagaMaoJogador();
 		int x = 1045;
 		if(this.getMaoJogador().size() < 8)
 			for(int i = 0; i < this.getMaoJogador().size(); i++) {
-				ig.criaBotaoCardMaoJogador(x, 670, this.getMaoJogador().get(i), i);
+				controle.criaBotaoCardMaoJogador(x, 670, this.getMaoJogador().get(i), i);
 				x -= 140;
 			}
-		ig.atualizaPilhas();
+		controle.atualizaPilhas();
 	}
 	
 	public void addCardMaoComputadorNaInterfaceGrafica() {
-		ig.apagaMaoComputador();
+		controle.apagaMaoComputador();
 		int x = 1045;
 		if(this.getMaoComputador().size() < 8)
 			for(int i = 0; i < this.getMaoComputador().size(); i++) {
-				ig.criaBotaoCardMaoComputador(x, -60, this.getMaoComputador().get(i), i);
+				controle.criaBotaoCardMaoComputador(x, -60, this.getMaoComputador().get(i), i);
 				x -= 140;
-				ig.refresh();
 			}
 	}
 	
@@ -348,7 +348,7 @@ public class CampoDeBatalha {
 		return this.deckJogador;
 	}
 	
-	public List<Card> getDeckCPU() {
+	public List<Card> getDeckComputador() {
 		return this.deckComputador;
 	}
 	
@@ -424,7 +424,7 @@ public class CampoDeBatalha {
 	public void removeTodosOsCardsMonstrosNoCampoDoJogador() {
 		for(int i = 0; i < this.cardsMonstrosJogador.size(); i++) {
 			this.cardsMonstrosJogador.remove(i);
-			ig.removeCardMonstroJogador(i);
+			controle.removeCardMonstroJogador(i);
 			pontuacao.aumentaNumCartasPerdidas();
 		}
 	}
@@ -432,7 +432,7 @@ public class CampoDeBatalha {
 	public void removeTodosOsCardsMonstrosNoCampoDoComputador() {
 		for(int i = 0; i < this.cardsMonstrosComputador.size(); i++) {
 			this.cardsMonstrosComputador.remove(i);
-			ig.removeCardMonstroComputador(i);
+			controle.removeCardMonstroComputador(i);
 		}
 	}
 	
@@ -452,18 +452,18 @@ public class CampoDeBatalha {
 		return this.deckFusaoComputador;
 	}
 	
-	public void removeCardMonstroComputador(int indice) {
-		if(cardsMonstrosComputador.get(indice) != null) {
-			this.cardsMonstrosComputador.remove(indice);
-			ig.removeCardMonstroComputador(indice);
-		}
-	}
-	
 	public void removeCardMonstroJogador(int indice) {
 		if(cardsMonstrosJogador.get(indice) != null) {
 			this.cardsMonstrosJogador.remove(indice);
-			ig.removeCardMonstroJogador(indice);
+			controle.removeCardMonstroJogador(indice);
 			pontuacao.aumentaNumCartasPerdidas();
+		}
+	}
+	
+	public void removeCardMonstroComputador(int indice) {
+		if(cardsMonstrosComputador.get(indice) != null) {
+			this.cardsMonstrosComputador.remove(indice);
+			controle.removeCardMonstroComputador(indice);
 		}
 	}
 	
@@ -510,7 +510,7 @@ public class CampoDeBatalha {
 
 	private void coordenadasCardMagiaOuArmadilhaJogador(int indice, int xMao, int yMao, int i) {
 		this.cardsMagiaEArmadilhaJogador.put(i, this.maoJogador.get(indice));
-		ig.criaBotaoCardMagiaEArmadilhaJogador(485 + (i*140), 520, this.cardsMagiaEArmadilhaJogador.get(i), xMao, yMao);
+		controle.criaBotaoCardMagiaEArmadilhaJogador(485 + (i*140), 520, this.cardsMagiaEArmadilhaJogador.get(i), xMao, yMao);
 		this.maoJogador.remove(indice);
 		pontuacao.aumentaNumCartasJogadas();
 	}
@@ -519,10 +519,10 @@ public class CampoDeBatalha {
 		this.cardsMonstrosJogador.put(i, this.maoJogador.get(indice));
 		
 		if(((CardMonstro) card).getPosicao() instanceof PosicaoAtaque)
-			ig.criaBotaoCardMonstroAtaqueJogador(485 + (i*140), 380, this.cardsMonstrosJogador.get(i), xMao, yMao);
+			controle.criaBotaoCardMonstroAtaqueJogador(485 + (i*140), 380, this.cardsMonstrosJogador.get(i), xMao, yMao);
 		
 		if(((CardMonstro) card).getPosicao() instanceof PosicaoDefesa)
-			ig.criaBotaoCardMonstroDefesaJogador(460 + (i*140), 400, this.cardsMonstrosJogador.get(i), xMao, yMao);
+			controle.criaBotaoCardMonstroDefesaJogador(460 + (i*140), 400, this.cardsMonstrosJogador.get(i), xMao, yMao);
 		
 		this.maoJogador.remove(indice);
 		pontuacao.aumentaNumCartasJogadas();
@@ -548,7 +548,7 @@ public class CampoDeBatalha {
 
 	private void coordenadasCardMagiaOuArmadilhaComputador(int indice, int xMao, int yMao, int i) {
 		this.cardsMagiaEArmadilhaComputador.put(i, this.maoComputador.get(indice));
-		ig.criaBotaoCardMagiaEArmadilhaComputador(485 + (i*140), 90, this.cardsMagiaEArmadilhaComputador.get(i), xMao, yMao);
+		controle.criaBotaoCardMagiaEArmadilhaComputador(485 + (i*140), 90, this.cardsMagiaEArmadilhaComputador.get(i), xMao, yMao);
 		this.maoComputador.remove(indice);
 	}
 
@@ -556,10 +556,10 @@ public class CampoDeBatalha {
 		this.cardsMonstrosComputador.put(i, this.maoComputador.get(indice));
 		
 		if(((CardMonstro) card).getPosicao() instanceof PosicaoAtaque)
-			ig.criaBotaoCardMonstroAtaqueComputador(485 + (i*140), 230, this.cardsMonstrosComputador.get(i), xMao, yMao);
+			controle.criaBotaoCardMonstroAtaqueComputador(485 + (i*140), 230, this.cardsMonstrosComputador.get(i), xMao, yMao);
 		
 		if(((CardMonstro) card).getPosicao() instanceof PosicaoDefesa)
-			ig.criaBotaoCardMonstroDefesaComputador(460 + (i*140), 250, this.cardsMonstrosComputador.get(i), xMao, yMao);
+			controle.criaBotaoCardMonstroDefesaComputador(460 + (i*140), 250, this.cardsMonstrosComputador.get(i), xMao, yMao);
 		
 		this.maoComputador.remove(indice);
 	}
@@ -581,27 +581,27 @@ public class CampoDeBatalha {
 
 	public void setCardDisabledJogador(Card card) {
 		int i = this.retornaPosicaoCardMonstroNoCampoJogador(card.getNome());
-		if(ig.getListaButtonsCardsMonstrosJogador().get(i) != null)
-			ig.getListaButtonsCardsMonstrosJogador().get(i).setEnabled(false);
+		if(controle.getListaButtonsCardsMonstrosJogador().get(i) != null)
+			controle.getListaButtonsCardsMonstrosJogador().get(i).setEnabled(false);
 	}
 	
 	public void setCardEnabledJogador() {
 		for(int k = 0; k < this.cardsMonstrosJogador.size(); k++) {
-			if(ig.getListaButtonsCardsMonstrosJogador().get(k) != null)
-				ig.getListaButtonsCardsMonstrosJogador().get(k).setEnabled(true);
+			if(controle.getListaButtonsCardsMonstrosJogador().get(k) != null)
+				controle.getListaButtonsCardsMonstrosJogador().get(k).setEnabled(true);
 		}
 	}
 	
 	public void setCardDisabledComputador(Card card) {
 		int i = this.retornaPosicaoCardMonstroNoCampoComputador(card.getNome());
-		if(ig.getListaButtonsCardsMonstrosComputador().get(i) != null)
-			ig.getListaButtonsCardsMonstrosComputador().get(i).setEnabled(false);
+		if(controle.getListaButtonsCardsMonstrosComputador().get(i) != null)
+			controle.getListaButtonsCardsMonstrosComputador().get(i).setEnabled(false);
 	}
 	
 	public void setCardEnabledComputador() {
 		for(int k = 0; k < this.cardsMonstrosComputador.size(); k++) {
-			if(ig.getListaButtonsCardsMonstrosComputador().get(k) != null)
-				ig.getListaButtonsCardsMonstrosComputador().get(k).setEnabled(true);
+			if(controle.getListaButtonsCardsMonstrosComputador().get(k) != null)
+				controle.getListaButtonsCardsMonstrosComputador().get(k).setEnabled(true);
 		}
 	}
 	
@@ -619,13 +619,13 @@ public class CampoDeBatalha {
 	public void destroiCardMagiaEArmadilhaJogador(Card card) {
 		int posicao = this.retornaPosicaoCardMagiaEArmadilhaNoCampoJogador(card.getNome());
 		this.removeCardMagiaEArmadilhaJogador(posicao);
-		ig.removeCardMagiaEArmadilhaJogador(posicao);
+		controle.removeCardMagiaEArmadilhaJogador(posicao);
 	}
 	
 	public void destroiCardMagiaEArmadilhaComputador(Card card) {
 		int posicao = this.retornaPosicaoCardMagiaEArmadilhaNoCampoComputador(card.getNome());
 		this.removeCardMagiaEArmadilhaComputador(posicao);
-		ig.removeCardMagiaEArmadilhaComputador(posicao);
+		controle.removeCardMagiaEArmadilhaComputador(posicao);
 	}
 	
 	public String retornaEstatisticas() {
@@ -637,6 +637,10 @@ public class CampoDeBatalha {
 				+ "Cartas Perdidas: " + pontuacao.getNumCartasPerdidas() + "\n"
 				+ "Cartas Compradas: " + pontuacao.getNumCartasCompradas() + "\n\n"
 				+ "Número de Rodadas Jogadas: " + pontuacao.getNumRodadas();
+	}
+	
+	public void playSound(String soundName) {
+		controle.playSound(soundName);
 	}
 	
 	public void salvaArquivo(){

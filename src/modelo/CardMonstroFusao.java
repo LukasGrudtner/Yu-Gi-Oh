@@ -1,7 +1,5 @@
 package modelo;
 
-import modelo.tipos.Efeito;
-
 public class CardMonstroFusao extends CardMonstro {
 	
 	boolean fusao;
@@ -10,10 +8,5 @@ public class CardMonstroFusao extends CardMonstro {
 		super(nome, nivel, numero, ATK, DEF, descricao);
 		this.fusao = fusao;
 	}
-
-//	@Override
-//	public TipoCard getTipoCard() {
-//		return this.tipoCard;
-//	}
 	
 }

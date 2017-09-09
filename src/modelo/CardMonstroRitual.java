@@ -1,6 +1,5 @@
 package modelo;
 
-import modelo.tipos.Efeito;
 
 public class CardMonstroRitual extends CardMonstro {
 	
@@ -10,10 +9,5 @@ public class CardMonstroRitual extends CardMonstro {
 		super(nome, nivel, numero, ATK, DEF, descricao);
 		this.ritual = ritual;
 	}
-
-//	@Override
-//	public TipoCard getTipoCard() {
-//		return this.tipoCard;
-//	}
 
 }

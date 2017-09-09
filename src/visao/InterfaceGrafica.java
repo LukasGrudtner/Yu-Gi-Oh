@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,56 +17,43 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import controle.Controle;
 import excecoes.ExcecaoAtaque;
-import excecoes.ExcecaoFase;
-import modelo.CampoDeBatalha;
 import modelo.Card;
 import modelo.CardArmadilha;
 import modelo.CardMagia;
 import modelo.CardMonstro;
 import modelo.CardMonstroFusao;
-import modelo.EfeitoCardsMagia;
-import modelo.estados.FaseBatalha;
-import modelo.estados.FasePrincipal1;
-import modelo.estados.FasePrincipal2;
-import modelo.estados.LimiteExcedido;
-import modelo.estados.LimiteNaoExcedido;
-import modelo.estados.TurnoComputador;
-import modelo.estados.TurnoJogador;
 import modelo.estados.estadosCard.FaceParaBaixo;
 import modelo.estados.estadosCard.estadosCardMonstro.AtaqueNaoRealizado;
 import modelo.estados.estadosInvocacao.MonstroNaoInvocado;
 
 public class InterfaceGrafica extends JFrame {
 	
-	private JButton botaoFaseCompra, botaoFaseApoio, botaoFasePrincipal1, botaoFaseBatalha, botaoFasePrincipal2, botaoFaseFinal, botaoMenu, botaoTeste, botaoApagaTeste;
-	private JButton botaoCardMonstroAtaque, botaoCardMonstroDefesa, botaoCardMagiaEArmadilha, botaoIniciar, botaoVoltarParaOJogo, botaoEstatisticas;
-	private JLabel labelCard, verso, versoDefesa, turno, fase;
-	private JLabel descricaoCard, labelCardMonstro;
-	private ImageIcon versoCard, cardAtaque;
-	private CampoDeBatalha campoDeBatalha;
-	private Card card;
-	private JButton cardMao, botaoRefresh, botaoDeckFusao;
-	private JLabel background, exodia;
-	private JPanel panelCardJogador, panelCardComputador, painelJanela, painelInicial, painelCardMonstroJogador, painelCardMonstroComputador, painelCardMagiaEArmadilhaJogador, painelCardMagiaEArmadilhaComputador;
-	private PilhaJogador pilhaJogador;
-	private PilhaComputador pilhaComputador;
+	private static final long serialVersionUID = 1L;
+	
+	private JButton botaoFasePrincipal1, botaoFaseBatalha, botaoFasePrincipal2, botaoFaseFinal, botaoMenu, botaoCardMonstroAtaque, botaoCardMonstroDefesa, botaoCardMagiaEArmadilha, botaoIniciar, botaoVoltarParaOJogo, botaoEstatisticas, cardMao, botaoDeckFusao, botaoCardFusao;
+	private JLabel labelCard, verso, turno, fase, descricaoCard, background, versoCemiterioJogador, versoCemiterioComputador, imagemFundo;
+	private JPanel panelCardJogador, panelCardComputador, painelJanela, painelInicial, painelCardMonstroJogador, painelCardMonstroComputador, painelCardMagiaEArmadilhaJogador, painelCardMagiaEArmadilhaComputador, painelDeckFusao;
+	
 	private List<JPanel> listaPaineisCardsMaoJogador, listaPaineisCardsMaoComputador;
 	private Map<Integer, JPanel> listaPaineisCardsMonstrosJogador, listaPaineisCardsMonstrosComputador, listaPaineisCardsMagiaEArmadilhaJogador, listaPaineisCardsMagiaEArmadilhaComputador;
-	private JanelaPosicaoCard janelaPosicaoCard;
-	private JanelaDescartarCard janelaDescartarCard;
-	private BackgroundSound b;
-	private JLabel versoCemiterioJ, versoCemiterioC, imagemFundo;
-	private JLabel vidaJogador, vidaComputador;
 	private Map<Integer, JButton> listaButtonsCardsMonstrosJogador, listaButtonsCardsMonstrosComputador;
-	private JButton botaoCardFusao;
-	private JPanel painelDeckFusao;
-	private Counter counterJogador, counterComputador;
+	
 	private int posicaoX = 20;
 	private int draw5Cards = 0;
 	private boolean ativaBotaoDeckFusao = false;
 	
-	public InterfaceGrafica(CampoDeBatalha campoDeBatalha) {
+	private PilhaJogador pilhaJogador;
+	private PilhaComputador pilhaComputador;
+	private BackgroundSound somDeFundo;
+	private Counter counterJogador, counterComputador;
+	private Controle controle;
+	private Card card;
+	private JanelaPosicaoCard janelaPosicaoCard;
+	private JanelaDescartarCard janelaDescartarCard;
+	
+	public InterfaceGrafica() {
 		super("Yu-Gi-Oh!");
 		setLayout(null);
 		
@@ -85,27 +71,18 @@ public class InterfaceGrafica extends JFrame {
 		listaButtonsCardsMonstrosComputador = new HashMap<>();
 		labelCard = new JLabel();
 		descricaoCard = new JLabel();
-		labelCardMonstro = new JLabel();
 		botaoDeckFusao = new JButton();
 		background = new JLabel();
 		imagemFundo = new JLabel();
-		
-		
+			
 		botaoFasePrincipal1 = new JButton("Main 1");
 		botaoFaseBatalha = new JButton("Battle");
 		botaoFasePrincipal2 = new JButton("Main 2");
 		botaoFaseFinal = new JButton("Finish");
 		
-		this.campoDeBatalha = campoDeBatalha;
-		
-//		criaBotaoFaseCompra();
-//		criaBotaoFaseApoio();
-//		criaBotaoFasePrincipal1();
 		criaBotaoFaseBatalha();
 		criaBotaoFasePrincipal2();
 		criaBotaoTerminarJogada();
-		
-//		criaBotaoRefresh();
 		
 		criaLabelTurno();
 		criaLabelFase();
@@ -119,14 +96,15 @@ public class InterfaceGrafica extends JFrame {
 		criaBotaoEstatisticas();
 		setBackgroundPainelInicial();
 		
-//		criaLabelVidaJogador();
-//		criaLabelVidaComputador();
-		
 		criaCounters();
 
 		criaJanela();
 	}
 
+	public void setControle(Controle controle) {
+		this.controle = controle;
+	}
+	
 	private void criaCounters() {
 		counterJogador = new Counter(0, 630);
 		painelJanela.add(counterJogador);
@@ -154,17 +132,17 @@ public class InterfaceGrafica extends JFrame {
 			}
 
 			private void efeitoCardMonstroAtaqueJogadorNoTurnoJogador(Card card) {
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro && ((CardMonstro) card).getAtaque() instanceof AtaqueNaoRealizado) {
-					campoDeBatalha.setCardDisabledJogador(card);
-					campoDeBatalha.setAtacanteBattle((CardMonstro) card); 
+				if(controle.verificaTurnoJogador() && controle.verificaFaseBatalha() && card instanceof CardMonstro && ((CardMonstro) card).getAtaque() instanceof AtaqueNaoRealizado) {
+					controle.setCardDisabledJogador(card);
+					controle.setAtacanteBattle((CardMonstro) card); 
 				}
 			}
 
 			private void efeitoCardMonstroAtaqueJogadorNoTurnoComputador(Card card) {
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro) {
+				if(controle.verificaTurnoComputador() && controle.verificaFaseBatalha() && card instanceof CardMonstro) {
 					PlaySound p = new PlaySound();
 					p.playSound("resources" + File.separator + "CardDestruction.wav");
-					campoDeBatalha.setAlvoBattle((CardMonstro) card); 
+					controle.setAlvoBattle((CardMonstro) card); 
 				}
 			}
 
@@ -197,8 +175,8 @@ public class InterfaceGrafica extends JFrame {
 		painelCardMonstroJogador.setLocation(xMao, yMao);
 		painelCardMonstroJogador.setVisible(true);
 		painelJanela.add(painelCardMonstroJogador);
-		listaPaineisCardsMonstrosJogador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), painelCardMonstroJogador);
-		listaButtonsCardsMonstrosJogador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), botaoCardMonstroAtaque);
+		listaPaineisCardsMonstrosJogador.put(controle.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), painelCardMonstroJogador);
+		listaButtonsCardsMonstrosJogador.put(controle.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), botaoCardMonstroAtaque);
 		new Movimento(x, y, painelCardMonstroJogador);
 		criaBackground();
 		
@@ -208,20 +186,18 @@ public class InterfaceGrafica extends JFrame {
 		try {
 			((CardMonstro) card).mudaParaAtaqueRealizado();
 		} catch (ExcecaoAtaque e1) {}
-		painelCardMonstroJogador = new JPanel();
 		
+		painelCardMonstroJogador = new JPanel();
 		botaoCardMonstroDefesa = new JButton();
 		botaoCardMonstroDefesa.setSize(134, 92);
-		if(card.getFace() instanceof FaceParaBaixo)
-			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + "Verso2.png"));
-		else
-			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + card.getNome() + ".png"));
+		
+		verificaCardDefesaSeEstaComAFaceParaBaixo(card);
 		botaoCardMonstroDefesa.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro) {
-					campoDeBatalha.setAlvoBattle((CardMonstro) card);
+				if(controle.verificaTurnoComputador() && controle.verificaFaseBatalha() && card instanceof CardMonstro) {
+					controle.setAlvoBattle((CardMonstro) card);
 					PlaySound p = new PlaySound();
 					p.playSound("resources" + File.separator + "CardDestruction.wav");
 				}
@@ -232,8 +208,6 @@ public class InterfaceGrafica extends JFrame {
 				criaDescricaoCard(card);
 				getContentPane().setEnabled(false);
 				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -254,28 +228,32 @@ public class InterfaceGrafica extends JFrame {
 		painelCardMonstroJogador.setLocation(xMao, yMao);
 		painelCardMonstroJogador.setVisible(true);
 		painelJanela.add(painelCardMonstroJogador);
-		listaPaineisCardsMonstrosJogador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), painelCardMonstroJogador);
+		listaPaineisCardsMonstrosJogador.put(controle.retornaPosicaoCardMonstroNoCampoJogador(card.getNome()), painelCardMonstroJogador);
 		
 		new Movimento(x, y, painelCardMonstroJogador);
 		criaBackground();
+	}
+
+	private void verificaCardDefesaSeEstaComAFaceParaBaixo(Card card) {
+		if(card.getFace() instanceof FaceParaBaixo)
+			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + "Verso2.png"));
+		else
+			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + card.getNome() + ".png"));
 	}
 	
 	public void criaBotaoCardMagiaEArmadilhaJogador(int x, int y, Card card, int xMao, int yMao) {
 		painelCardMagiaEArmadilhaJogador = new JPanel();
 		botaoCardMagiaEArmadilha = new JButton();
 		botaoCardMagiaEArmadilha.setSize(92, 134);
-		if(card.getFace() instanceof FaceParaBaixo)
-			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		else
-			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
+		verificaCardMagiaEArmadilhaSeEstaComAFaceParaBaixo(card);
 		botaoCardMagiaEArmadilha.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2)) {
-					new EfeitoCardsMagia(campoDeBatalha, card.getNome());
-					campoDeBatalha.destroiCardMagiaEArmadilhaJogador(card);
-				}
+//				if(controle.getTurno() instanceof TurnoJogador && (controle.getFase() instanceof FasePrincipal1 || controle.getFase() instanceof FasePrincipal2)) {
+//					new EfeitoCardsMagia(campoDeBatalha, card.getNome());
+//					campoDeBatalha.destroiCardMagiaEArmadilhaJogador(card);
+//				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
@@ -283,8 +261,6 @@ public class InterfaceGrafica extends JFrame {
 				criaDescricaoCard(card);
 				getContentPane().setEnabled(false);
 				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -298,43 +274,55 @@ public class InterfaceGrafica extends JFrame {
 			
 		});
 
-
 		painelCardMagiaEArmadilhaJogador.add(botaoCardMagiaEArmadilha);
-		
 		painelCardMagiaEArmadilhaJogador.setLayout(null);
 		painelCardMagiaEArmadilhaJogador.setSize(92, 134);
 		painelCardMagiaEArmadilhaJogador.setLocation(xMao, yMao);
 		painelCardMagiaEArmadilhaJogador.setVisible(true);
 		painelJanela.add(painelCardMagiaEArmadilhaJogador);
 		
-		listaPaineisCardsMagiaEArmadilhaJogador.put(campoDeBatalha.retornaPosicaoCardMagiaEArmadilhaNoCampoJogador(card.getNome()), painelCardMagiaEArmadilhaJogador);
+		listaPaineisCardsMagiaEArmadilhaJogador.put(controle.retornaPosicaoCardMagiaEArmadilhaNoCampoJogador(card.getNome()), painelCardMagiaEArmadilhaJogador);
 		new Movimento(x, y, painelCardMagiaEArmadilhaJogador);
 		criaBackground();
+	}
+
+	private void verificaCardMagiaEArmadilhaSeEstaComAFaceParaBaixo(Card card) {
+		if(card.getFace() instanceof FaceParaBaixo)
+			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
+		else
+			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
 	}
 	
 	public void criaBotaoCardMonstroAtaqueComputador(int x, int y, Card card, int xMao, int yMao) {
 		try {
 			((CardMonstro) card).mudaParaAtaqueRealizado();
 		} catch (ExcecaoAtaque e1) {}
+		
 		painelCardMonstroComputador = new JPanel();
 		botaoCardMonstroAtaque = new JButton();
-		
 		botaoCardMonstroAtaque.setSize(92, 134);
 		botaoCardMonstroAtaque.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
 		botaoCardMonstroAtaque.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				campoDeBatalha.setCardEnabledComputador();
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro) {
+				controle.setCardEnabledComputador();
+				efeitoCardMonstroAtaqueComputadorNoTurnoDoComputador(card);
+				efeitoCardMonstroAtaqueComputadorNoTurnoDoJogador(card);
+			}
+
+			private void efeitoCardMonstroAtaqueComputadorNoTurnoDoJogador(Card card) {
+				if(controle.verificaTurnoComputador() && controle.verificaFaseBatalha() && card instanceof CardMonstro && ((CardMonstro) card).getAtaque() instanceof AtaqueNaoRealizado) {
+					controle.setCardDisabledComputador(card);
+					controle.setAtacanteBattle((CardMonstro) card); 
+				}
+			}
+
+			private void efeitoCardMonstroAtaqueComputadorNoTurnoDoComputador(Card card) {
+				if(controle.verificaTurnoJogador() && controle.verificaFaseBatalha() && card instanceof CardMonstro) {
 					PlaySound p = new PlaySound();
 					p.playSound("resources" + File.separator + "CardDestruction.wav");
-					campoDeBatalha.setAlvoBattle((CardMonstro) card); 
-				}
-				
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro && ((CardMonstro) card).getAtaque() instanceof AtaqueNaoRealizado) {
-					campoDeBatalha.setCardDisabledComputador(card);
-					campoDeBatalha.setAtacanteBattle((CardMonstro) card); 
+					controle.setAlvoBattle((CardMonstro) card); 
 				}
 			}
 
@@ -342,10 +330,6 @@ public class InterfaceGrafica extends JFrame {
 			public void mouseEntered(MouseEvent arg0) {
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-				getContentPane().setEnabled(false);
-				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 
 			@Override
@@ -369,11 +353,10 @@ public class InterfaceGrafica extends JFrame {
 		painelCardMonstroComputador.setVisible(true);
 		painelJanela.add(painelCardMonstroComputador);
 		
-		listaPaineisCardsMonstrosComputador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), painelCardMonstroComputador);
-		listaButtonsCardsMonstrosComputador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), botaoCardMonstroAtaque);
+		listaPaineisCardsMonstrosComputador.put(controle.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), painelCardMonstroComputador);
+		listaButtonsCardsMonstrosComputador.put(controle.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), botaoCardMonstroAtaque);
 		new Movimento(x, y, painelCardMonstroComputador);
 		criaBackground();
-		
 	}
 	
 	public void criaBotaoCardMonstroDefesaComputador(int x, int y, Card card, int xMao, int yMao) {
@@ -385,28 +368,21 @@ public class InterfaceGrafica extends JFrame {
 		botaoCardMonstroDefesa = new JButton();
 		
 		botaoCardMonstroDefesa.setSize(134, 92);
-		if(card.getFace() instanceof FaceParaBaixo)
-			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + "Verso2.png"));
-		else
-			botaoCardMonstroDefesa.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsDefesa" + File.separator + card.getNome() + ".png"));
+		verificaCardDefesaSeEstaComAFaceParaBaixo(card);
 		botaoCardMonstroDefesa.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && campoDeBatalha.getFase() instanceof FaseBatalha && card instanceof CardMonstro) {
+				if(controle.verificaTurnoJogador() && controle.verificaFaseBatalha() && card instanceof CardMonstro) {
 					PlaySound p = new PlaySound();
 					p.playSound("resources" + File.separator + "CardDestruction.wav");
-					campoDeBatalha.setAlvoBattle((CardMonstro) card); 
+					controle.setAlvoBattle((CardMonstro) card); 
 				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-				getContentPane().setEnabled(false);
-				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -417,7 +393,6 @@ public class InterfaceGrafica extends JFrame {
 			@Override
 			public void mouseReleased(MouseEvent e) {
 			}
-			
 		});
 		
 		painelCardMonstroComputador.add(botaoCardMonstroDefesa);
@@ -427,7 +402,7 @@ public class InterfaceGrafica extends JFrame {
 		painelCardMonstroComputador.setVisible(true);
 		painelJanela.add(painelCardMonstroComputador);
 		
-		listaPaineisCardsMonstrosComputador.put(campoDeBatalha.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), painelCardMonstroComputador);
+		listaPaineisCardsMonstrosComputador.put(controle.retornaPosicaoCardMonstroNoCampoComputador(card.getNome()), painelCardMonstroComputador);
 		new Movimento(x, y, painelCardMonstroComputador);
 		criaBackground();
 	}
@@ -437,28 +412,21 @@ public class InterfaceGrafica extends JFrame {
 		botaoCardMagiaEArmadilha = new JButton();
 		
 		botaoCardMagiaEArmadilha.setSize(92, 134);
-		if(card.getFace() instanceof FaceParaBaixo)
-			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		else
-			botaoCardMagiaEArmadilha.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
+		verificaCardMagiaEArmadilhaSeEstaComAFaceParaBaixo(card);
 		botaoCardMagiaEArmadilha.addMouseListener(new MouseListener() {
 
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2)) {
-
-					new EfeitoCardsMagia(campoDeBatalha, card.getNome());
-					campoDeBatalha.destroiCardMagiaEArmadilhaComputador(card);
-				}
+//				if(controle.getTurno() instanceof TurnoComputador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2)) {
+//
+//					new EfeitoCardsMagia(campoDeBatalha, card.getNome());
+//					campoDeBatalha.destroiCardMagiaEArmadilhaComputador(card);
+//				}
 			}
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-				getContentPane().setEnabled(false);
-				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent e) {
@@ -479,11 +447,10 @@ public class InterfaceGrafica extends JFrame {
 		painelCardMagiaEArmadilhaComputador.setVisible(true);
 		painelJanela.add(painelCardMagiaEArmadilhaComputador);
 		
-		listaPaineisCardsMagiaEArmadilhaComputador.put(campoDeBatalha.retornaPosicaoCardMagiaEArmadilhaNoCampoComputador(card.getNome()), painelCardMagiaEArmadilhaComputador);
+		listaPaineisCardsMagiaEArmadilhaComputador.put(controle.retornaPosicaoCardMagiaEArmadilhaNoCampoComputador(card.getNome()), painelCardMagiaEArmadilhaComputador);
 		new Movimento(x, y, painelCardMagiaEArmadilhaComputador);
 		criaBackground();
 	}
-
 
 	public void apagaMaoJogador() {
 		for(int i = 0; i < listaPaineisCardsMaoJogador.size(); i++) {
@@ -527,49 +494,51 @@ public class InterfaceGrafica extends JFrame {
 		draw5Cards++;
 		panelCardJogador = new JPanel();
 		this.card = card;
-		versoCard = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + this.card.getNome() + ".png");
 		cardMao = new JButton();
 		cardMao.setSize(92, 134);
-		cardMao.setIcon(versoCard);
+		cardMao.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + this.card.getNome() + ".png"));
 		cardMao.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				janelaDescartarCard.dispose();
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2) && card instanceof CardMonstro && campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado && (campoDeBatalha.getCardsMonstrosDoCampoDoJogador().size() < 5 || campoDeBatalha.getJogador().getLimite() instanceof LimiteExcedido)) {
-					for(int i = 0; i < listaPaineisCardsMaoJogador.size(); i++) {
-						listaPaineisCardsMaoJogador.get(i).setVisible(false);
-						getContentPane().remove(listaPaineisCardsMaoJogador.get(i));
-					}
-					
-					//new JanelaPosicaoCard(x - 25, y - 75, campoDeBatalha, card);
-					atualizaJanelaPosicaoCard(x, y, campoDeBatalha, card);
-					
-						
-					campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
-					campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-					verificaLimite();
-				}
 				
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2) && (card instanceof CardMagia || card instanceof CardArmadilha)) {
-					janelaPosicaoCard.dispose();
-					verificaLimite();
-					
-					for(int i = 0; i < listaPaineisCardsMaoJogador.size(); i++) {
-						listaPaineisCardsMaoJogador.get(i).setVisible(false);
-						getContentPane().remove(listaPaineisCardsMaoJogador.get(i));
-					}
-					//new JanelaDescartarCard(x, y - 40, campoDeBatalha, card);
-					atualizaJanelaDescartarCard(x, y, campoDeBatalha, card);
-					campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
-					verificaLimite();
-				}
-				verificaLimite();
+				verificaCondicaoParaInvocacaoCardMonstroJogador(x, y, card);
+				verificaCondicaoParaInvocacaoCardMagiaEArmadilhaJogador(x, y, card);
+				
+				verificaLimiteDeCardsNaMao();
 			}
 
-			
+			private void verificaCondicaoParaInvocacaoCardMagiaEArmadilhaJogador(int x, int y, Card card) {
+				if(controle.verificaTurnoJogador() && (controle.verificaFasePrincipal1() || controle.verificaFasePrincipal2()) && (card instanceof CardMagia || card instanceof CardArmadilha)) {
+					janelaPosicaoCard.dispose();
+					verificaLimiteDeCardsNaMao();
+					
+					for(int i = 0; i < listaPaineisCardsMaoJogador.size(); i++) {
+						listaPaineisCardsMaoJogador.get(i).setVisible(false);
+						getContentPane().remove(listaPaineisCardsMaoJogador.get(i));
+					}
+					
+					atualizaJanelaDescartarCard(x, y, controle, card);
+					controle.addCardMaoJogadorNaInterfaceGrafica();
+					verificaLimiteDeCardsNaMao();
+				}
+			}
 
-			
+			private void verificaCondicaoParaInvocacaoCardMonstroJogador(int x, int y, Card card) {
+				if(controle.verificaTurnoJogador() && (controle.verificaFasePrincipal1() || controle.verificaFasePrincipal2()) && card instanceof CardMonstro && controle.getInvocacao() instanceof MonstroNaoInvocado && (controle.getNumCardsMonstrosDoCampoDoJogador() < 5 || controle.verificaSeLimiteDoJogadorFoiExcedido())) {
+					for(int i = 0; i < listaPaineisCardsMaoJogador.size(); i++) {
+						listaPaineisCardsMaoJogador.get(i).setVisible(false);
+						getContentPane().remove(listaPaineisCardsMaoJogador.get(i));
+					}
+					
+					atualizaJanelaPosicaoCard(x, y, controle, card);
+					controle.addCardMaoJogadorNaInterfaceGrafica();
+					controle.addCardMaoComputadorNaInterfaceGrafica();
+					verificaLimiteDeCardsNaMao();
+				}
+			}
+
 		});
 		
 		cardMao.addMouseListener(new MouseListener() {
@@ -579,15 +548,8 @@ public class InterfaceGrafica extends JFrame {
 			}
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-//				PlaySound p = new PlaySound();
-//				p.playSound("resources" + File.separator + "SelectAlvo.wav");
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-//				getContentPane().setEnabled(false);
-//				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent arg0) {
@@ -605,67 +567,60 @@ public class InterfaceGrafica extends JFrame {
 		panelCardJogador.setVisible(true);
 		panelCardJogador.add(cardMao);
 		listaPaineisCardsMaoJogador.add(panelCardJogador);
+		verificaCompraDos5CardsDoInicioDoJogoJogador(x, y);
+		painelJanela.add(panelCardJogador);
+		criaBackground();
+	}
+
+	private void verificaCompraDos5CardsDoInicioDoJogoJogador(int x, int y) {
 		if(draw5Cards < 7)
 			new Movimento(x, y, panelCardJogador);
 		else
 			panelCardJogador.setLocation(x, y);
-		painelJanela.add(panelCardJogador);
-		criaBackground();
 	}
 	
-	private void atualizaJanelaDescartarCard(int x, int y, CampoDeBatalha campoDeBatalha, Card card) {
+	private void atualizaJanelaDescartarCard(int x, int y, Controle controle, Card card) {
 		janelaDescartarCard.dispose();
 		janelaDescartarCard = new JanelaDescartarCard();
-		janelaDescartarCard.iniciaJanela(x, y - 40, campoDeBatalha, card);
+		janelaDescartarCard.iniciaJanela(x, y - 40, controle, card);
 		criaBackground();
 	}
 	
-	private void atualizaJanelaPosicaoCard(int x, int y, CampoDeBatalha campoDeBatalha, Card card) {
+	private void atualizaJanelaPosicaoCard(int x, int y, Controle controle, Card card) {
 		janelaPosicaoCard.dispose();
 		janelaPosicaoCard = new JanelaPosicaoCard();
-		janelaPosicaoCard.iniciaJanela(x - 25, y - 75, campoDeBatalha, card);
+		janelaPosicaoCard.iniciaJanela(x - 25, y - 75, controle, card);
 		criaBackground();
 	}
 	
-	private void verificaLimite() {
-		if(campoDeBatalha.getMaoJogador().size() < 6)
-			campoDeBatalha.mudaParaLimiteNaoExcedidoJogador();
-		if(campoDeBatalha.getMaoComputador().size() < 6)
-			campoDeBatalha.mudaParaLimiteNaoExcedidoComputador();
+	private void verificaLimiteDeCardsNaMao() {
+		if(controle.getNumCardsMaoJogador() < 6)
+			controle.mudaParaLimiteNaoExcedidoJogador();
+		if(controle.getNumCardsMaoComputador() < 6)
+			controle.mudaParaLimiteNaoExcedidoComputador();
 		criaBackground();
 	}
 
 	public void criaBotaoCardMaoComputador(int x, int y, Card card, int posicao) {
 		panelCardComputador = new JPanel();
 		this.card = card;
-		versoCard = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png");
 		cardMao = new JButton();
 		cardMao.setSize(92, 134);
-		cardMao.setIcon(versoCard);
+		cardMao.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
 		cardMao.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				janelaDescartarCard.dispose();
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2) && card instanceof CardMonstro && campoDeBatalha.getInvocacao() instanceof MonstroNaoInvocado && (campoDeBatalha.getCardsMonstrosDoCampoDoComputador().size() < 5 || campoDeBatalha.getComputador().getLimite() instanceof LimiteExcedido)) {
-					
-					for(int i = 0; i < listaPaineisCardsMaoComputador.size(); i++) {
-						listaPaineisCardsMaoComputador.get(i).setVisible(false);
-						getContentPane().remove(listaPaineisCardsMaoComputador.get(i));
-					}
-					
-					//new JanelaPosicaoCard(x - 25, y + 165, campoDeBatalha, card);
-					atualizaJanelaPosicaoCard(x, y + 250, campoDeBatalha, card);
-						
-					getContentPane().setEnabled(false);
-					getContentPane().setEnabled(true);
-					campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
-					campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-					verificaLimite();
-				}
-				
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2) && (card instanceof CardMagia || card instanceof CardArmadilha)) {
-					verificaLimite();
+				verificaCondicaoParaInvocacaoCardMonstroComputador(x, y, card);
+				verificaCondicaoParaInvocacaoCardMagiaEArmadilhaComputador(x, y, card);
+				verificaLimiteDeCardsNaMao();
+			
+			}
+
+			private void verificaCondicaoParaInvocacaoCardMagiaEArmadilhaComputador(int x, int y, Card card) {
+				if(controle.verificaTurnoComputador() && (controle.verificaFasePrincipal1() || controle.verificaFasePrincipal2()) && (card instanceof CardMagia || card instanceof CardArmadilha)) {
+					verificaLimiteDeCardsNaMao();
 					janelaPosicaoCard.dispose();
 						
 					for(int i = 0; i < listaPaineisCardsMaoComputador.size(); i++) {
@@ -674,34 +629,37 @@ public class InterfaceGrafica extends JFrame {
 					}
 						
 					//new JanelaDescartarCard(x + 2, y + 170, campoDeBatalha, card);
-					atualizaJanelaDescartarCard(x + 2, y + 200, campoDeBatalha, card);
-					campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-					verificaLimite();
+					atualizaJanelaDescartarCard(x + 2, y + 200, controle, card);
+					controle.addCardMaoComputadorNaInterfaceGrafica();
+					verificaLimiteDeCardsNaMao();
 				}
-				verificaLimite();
-			
+			}
+
+			private void verificaCondicaoParaInvocacaoCardMonstroComputador(int x, int y, Card card) {
+				if(controle.verificaTurnoComputador() && (controle.verificaFasePrincipal1() || controle.verificaFasePrincipal2()) && card instanceof CardMonstro && controle.getInvocacao() instanceof MonstroNaoInvocado && (controle.getNumCardsMonstrosDoCampoDoComputador() < 5 || controle.verificaSeLimiteDoComputadorFoiExcedido())) {
+					
+					for(int i = 0; i < listaPaineisCardsMaoComputador.size(); i++) {
+						listaPaineisCardsMaoComputador.get(i).setVisible(false);
+						getContentPane().remove(listaPaineisCardsMaoComputador.get(i));
+					}
+					
+					atualizaJanelaPosicaoCard(x, y + 250, controle, card);
+
+					controle.addCardMaoJogadorNaInterfaceGrafica();
+					controle.addCardMaoComputadorNaInterfaceGrafica();
+					verificaLimiteDeCardsNaMao();
+				}
 			}
 		});
 		cardMao.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-//				if(arg0.isMetaDown())
-//					JOptionPane.showMessageDialog(null, "Botão Direito");
-//				if(arg0.isAltDown())
-//					JOptionPane.showMessageDialog(null, "Botão Esquerdo");
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent arg0) {
-				// TODO Auto-generated method stub
-//				PlaySound p = new PlaySound();
-//				p.playSound("resources" + File.separator + "SelectCard.wav");
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-				getContentPane().setEnabled(false);
-				getContentPane().setEnabled(true);
-//				apagaPaineisCounter();
-//				criaPaineisContador();
 			}
 			@Override
 			public void mouseExited(MouseEvent arg0) {
@@ -721,12 +679,16 @@ public class InterfaceGrafica extends JFrame {
 		listaPaineisCardsMaoComputador.add(panelCardComputador);
 		
 		painelJanela.add(panelCardComputador);
+		verificaCompraDos5CardsDoInicioDoJogoComputador(x, y);
+		criaBackground();
+		
+	}
+
+	private void verificaCompraDos5CardsDoInicioDoJogoComputador(int x, int y) {
 		if(draw5Cards < 7)
 			new Movimento(x, y, panelCardComputador);
 		else
 			panelCardComputador.setLocation(x, y);
-		criaBackground();
-		
 	}
 
 	private void criaBotaoDeckFusao() {
@@ -755,23 +717,18 @@ public class InterfaceGrafica extends JFrame {
 			}
 			
 		});
-		//getContentPane().add(botaoDeckFusao);
 		painelJanela.add(botaoDeckFusao);
 		criaBackground();
 	}
 
 	private void criaDecksComputador() {
-		//criaVersoCard(350, 90); // deck computador
-	//	criaVersoCard(350, 230); // cemitério computador
 		criaVersoCard(1170, 90); // deck fusão computador
 	}
-
 
 	void criaImagemCard(String nomeCard) {
 		labelCard.setSize(176, 256);
 		labelCard.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsVisualizacao" + File.separator + nomeCard + ".png"));
 		labelCard.setLocation(35, 150);
-		//getContentPane().add(labelCard);//, ALLBITS);
 		painelJanela.add(labelCard);
 		criaBackground();
 	}
@@ -784,104 +741,80 @@ public class InterfaceGrafica extends JFrame {
 		criaBackground();
 	}
 	
-	
 	private void criaVersoCard(int x, int y) {
-		versoCard = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png");
 		verso = new JLabel();
 		verso.setSize(92, 134);
-		verso.setIcon(versoCard);
+		verso.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
 		verso.setLocation(x, y);
-		//getContentPane().add(verso);
-		//painelJanela.add(verso);
 		criaBackground();
 	}
 	
 	private void criaPilhas() {
-		pilhaJogador = new PilhaJogador(campoDeBatalha.getDeckJogador().size());
+//		pilhaJogador = new PilhaJogador(campoDeBatalha.getDeckJogador().size());
+	//	int num = controle.getDeckJogador();
+		pilhaJogador = new PilhaJogador(50);
 		painelJanela.add(pilhaJogador);
 		
-		pilhaComputador = new PilhaComputador(campoDeBatalha.getDeckCPU().size());
+//		pilhaComputador = new PilhaComputador(campoDeBatalha.getDeckComputador().size());
+		pilhaComputador = new PilhaComputador(50);
 		painelJanela.add(pilhaComputador);
 		
-		versoCemiterioJ = new JLabel();
-		versoCemiterioJ.setSize(92, 134);
-		versoCemiterioJ.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		versoCemiterioJ.setLocation(1170, 380);
-		painelJanela.add(versoCemiterioJ);
+		versoCemiterioJogador = new JLabel();
+		versoCemiterioJogador.setSize(92, 134);
+		versoCemiterioJogador.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
+		versoCemiterioJogador.setLocation(1170, 380);
+		painelJanela.add(versoCemiterioJogador);
 		
-		versoCemiterioC = new JLabel();
-		versoCemiterioC.setSize(92, 134);
-		versoCemiterioC.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		versoCemiterioC.setLocation(350, 230);
-		//painelJanela.add(versoCemiterioC);
+		versoCemiterioComputador = new JLabel();
+		versoCemiterioComputador.setSize(92, 134);
+		versoCemiterioComputador.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
+		versoCemiterioComputador.setLocation(350, 230);
 		criaBackground();
 	
 	}
 	
 	public void atualizaPilhas() {		
-		versoCemiterioJ.setVisible(false);
-		painelJanela.remove(versoCemiterioJ);
-		versoCemiterioC.setVisible(false);
-		painelJanela.remove(versoCemiterioC);
+		pilhaJogador();
+		pilhaComputador();
 		
-		pilhaJogador.setVisible(false);
-		painelJanela.remove(pilhaJogador);
-		pilhaJogador = new PilhaJogador(campoDeBatalha.getDeckJogador().size());
-		painelJanela.add(pilhaJogador);
-		
-		criaBotaoDeckFusao();
+		criaBackground();
+	}
+
+	private void pilhaComputador() {
+		versoCemiterioComputador.setVisible(false);
+		painelJanela.remove(versoCemiterioComputador);
 		
 		pilhaComputador.setVisible(false);
 		painelJanela.remove(pilhaComputador);
-		pilhaComputador = new PilhaComputador(campoDeBatalha.getDeckCPU().size());
+		
+		pilhaComputador = new PilhaComputador(controle.getDeckComputador().size());
 		painelJanela.add(pilhaComputador);
 		
-		versoCemiterioJ = new JLabel();
-		versoCemiterioJ.setVisible(true);
-		versoCemiterioJ.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		versoCemiterioJ.setBounds(1170, 380, 92, 134);
-		painelJanela.add(versoCemiterioJ);
-		
-		versoCemiterioC = new JLabel();
-		versoCemiterioC.setSize(92, 134);
-		versoCemiterioC.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
-		versoCemiterioC.setLocation(370, 230);
-		painelJanela.add(versoCemiterioC);
-		criaBackground();
-		
+		versoCemiterioComputador = new JLabel();
+		versoCemiterioComputador.setSize(92, 134);
+		versoCemiterioComputador.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
+		versoCemiterioComputador.setLocation(370, 230);
+		painelJanela.add(versoCemiterioComputador);
 	}
-	
-	
-//	private void criaBotaoFaseCompra() {
-//		botaoFaseCompra = new JButton("Draw");
-//		botaoFaseCompra.setSize(80, 30);
-//		botaoFaseCompra.setLocation(250, 260);
-//		botaoFaseCompra.setVisible(true);
-//		botaoFaseCompra.setEnabled(false);
-//		//getContentPane().add(botaoFaseCompra);
-//		painelJanela.add(botaoFaseCompra);
-//		criaBackground();
-//	}
-	
-//	private void criaBotaoFaseApoio() {
-//		botaoFaseApoio = new JButton("Standby");
-//		botaoFaseApoio.setSize(80, 30);
-//		botaoFaseApoio.setLocation(250, 300);
-//		botaoFaseApoio.setVisible(true);
-//		botaoFaseApoio.setEnabled(false);
-//		//getContentPane().add(botaoFaseApoio);
-//		painelJanela.add(botaoFaseApoio);
-//		criaBackground();
-//	}
-	
-//	private void criaBotaoFasePrincipal1() {
-//		botaoFasePrincipal1.setSize(80, 30);
-//		botaoFasePrincipal1.setLocation(250, 340);
-//		botaoFasePrincipal1.setVisible(true);
-//		botaoFasePrincipal1.setEnabled(false);
-//		painelJanela.add(botaoFasePrincipal1);
-//		criaBackground();
-//	}
+
+	private void pilhaJogador() {
+		versoCemiterioJogador.setVisible(false);
+		painelJanela.remove(versoCemiterioJogador);
+		
+		pilhaJogador.setVisible(false);
+		painelJanela.remove(pilhaJogador);
+		
+		pilhaJogador = new PilhaJogador(controle.getDeckJogador());
+		painelJanela.add(pilhaJogador);
+		
+		criaBotaoDeckFusao();
+
+		versoCemiterioJogador = new JLabel();
+		versoCemiterioJogador.setVisible(true);
+		versoCemiterioJogador.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Verso2.png"));
+		versoCemiterioJogador.setBounds(1170, 380, 92, 134);
+		painelJanela.add(versoCemiterioJogador);
+	}
 	
 	private void criaBotaoFaseBatalha() {
 		botaoFaseBatalha = new JButton("Battle");
@@ -893,18 +826,13 @@ public class InterfaceGrafica extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					campoDeBatalha.mudaParaFaseBatalha();
-					String textoFase = verificaFaseString();
-					fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
-					botaoFasePrincipal1.setEnabled(false);
-					botaoFaseBatalha.setEnabled(false);
-					botaoFasePrincipal2.setEnabled(true);
-					botaoFaseFinal.setEnabled(false);
-				} catch (ExcecaoFase e) {
-					e.printStackTrace();
-				}
-				
+				controle.mudaParaFaseBatalha();
+				String textoFase = verificaFaseString();
+				fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
+				botaoFasePrincipal1.setEnabled(false);
+				botaoFaseBatalha.setEnabled(false);
+				botaoFasePrincipal2.setEnabled(true);
+				botaoFaseFinal.setEnabled(false);
 			}
 		});
 		
@@ -922,49 +850,17 @@ public class InterfaceGrafica extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				try {
-					campoDeBatalha.mudaParaFasePrincipal2();
-					String textoFase = verificaFaseString();
-					fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
-					botaoFaseFinal.setEnabled(true);
-					botaoFasePrincipal2.setEnabled(false);
-				} catch (ExcecaoFase e) {}
+				controle.mudaParaFasePrincipal2();
+				String textoFase = verificaFaseString();
+				fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
+				botaoFaseFinal.setEnabled(true);
+				botaoFasePrincipal2.setEnabled(false);
 			}
 		});
 		painelJanela.add(botaoFasePrincipal2);
 		criaBackground();
 	}
-	
-	public void refresh() {
-		getContentPane().setEnabled(false);
-		getContentPane().setEnabled(true);
-		criaBackground();
-	}
-	
-//	public void criaBotaoRefresh() {
-//		botaoRefresh = new JButton("Exódia");
-//		botaoRefresh.setSize(80, 30);
-//		botaoRefresh.setLocation(250, 500);
-//		botaoRefresh.setVisible(true);
-//		botaoRefresh.addActionListener(new ActionListener() {
-//
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				//new JanelaExodia();
-//				criaExodia();
-//				
-//				getContentPane().setEnabled(false);
-//				getContentPane().setEnabled(true);
-//			}
-//
-//			
-//			
-//		});
-//		//getContentPane().add(botaoRefresh);
-//		painelJanela.add(botaoRefresh);
-//		criaBackground();
-//	}
-	
+
 	private void criaBotaoTerminarJogada() {
 		botaoFaseFinal = new JButton("Finish");
 		botaoFaseFinal.setSize(80, 30);
@@ -974,32 +870,44 @@ public class InterfaceGrafica extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				verificaLimite();
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador) {
-					if(campoDeBatalha.getJogador().getLimite() instanceof LimiteExcedido)
-						JOptionPane.showMessageDialog(null, "Descarte uma carta!");
-				}
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador) {
-					if(campoDeBatalha.getComputador().getLimite() instanceof LimiteExcedido)
-						JOptionPane.showMessageDialog(null, "Descarte uma carta!");
-				}
+				verificaLimiteDeCardsNaMao();
+				
+				verificaSeOLimiteFoiExcedidoJogador();
+				verificaSeOLimiteFoiExcedidoComputador();
 					
-				if(campoDeBatalha.getComputador().getLimite() instanceof LimiteNaoExcedido && campoDeBatalha.getJogador().getLimite() instanceof LimiteNaoExcedido && (campoDeBatalha.getFase() instanceof FasePrincipal1 || campoDeBatalha.getFase() instanceof FasePrincipal2)) {
-						try {
-							campoDeBatalha.trocaTurno();
-							campoDeBatalha.mudaParaFasePrincipal1();
-		
-							String textoFase = verificaFaseString();
-							String textoTurno = verificaTurnoString();
-							fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
-							turno.setText("<html><font color = FFFFFF>" + textoTurno + "</font></html>");
-							
-							botaoFaseBatalha.setEnabled(true);
-							botaoFasePrincipal2.setEnabled(false);
-						} catch (ExcecaoFase e) {}
+				verificaCondicoesParaTerminarAJogada();
+				
+				controle.addCardMaoJogadorNaInterfaceGrafica();
+				controle.addCardMaoComputadorNaInterfaceGrafica();
+			}
+
+			private void verificaCondicoesParaTerminarAJogada() {
+				if(!controle.verificaSeLimiteDoComputadorFoiExcedido() && !controle.verificaSeLimiteDoJogadorFoiExcedido() && (controle.verificaFasePrincipal1() || controle.verificaFasePrincipal2())) {
+						controle.trocaTurno();
+						controle.mudaParaFasePrincipal1();
+
+						String textoFase = verificaFaseString();
+						String textoTurno = verificaTurnoString();
+						fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
+						turno.setText("<html><font color = FFFFFF>" + textoTurno + "</font></html>");
+						
+						botaoFaseBatalha.setEnabled(true);
+						botaoFasePrincipal2.setEnabled(false);
 				}
-				campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
-				campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
+			}
+
+			private void verificaSeOLimiteFoiExcedidoComputador() {
+				if(controle.verificaTurnoComputador()) {
+					if(controle.verificaSeLimiteDoComputadorFoiExcedido())
+						JOptionPane.showMessageDialog(null, "Descarte uma carta!");
+				}
+			}
+
+			private void verificaSeOLimiteFoiExcedidoJogador() {
+				if(controle.verificaTurnoJogador()) {
+					if(controle.verificaSeLimiteDoJogadorFoiExcedido())
+						JOptionPane.showMessageDialog(null, "Descarte uma carta!");
+				}
 			}
 		});
 
@@ -1007,76 +915,20 @@ public class InterfaceGrafica extends JFrame {
 		criaBackground();
 	}
 	
-	// Provisório
-//	private void criaExodia() {
-//		painelJanela.setVisible(false);
-//		int y = 380;
-//		
-//		labelCardMonstro = new JLabel();
-//		cardAtaque = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Perna Direita do Proibido.png");
-//		labelCardMonstro.setSize(92, 134);
-//		labelCardMonstro.setIcon(cardAtaque);
-//		labelCardMonstro.setLocation(673, 525);
-//		getContentPane().add(labelCardMonstro);
-//		
-//		labelCardMonstro = new JLabel();
-//		cardAtaque = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Braço Direito do Proibido.png");
-//		labelCardMonstro.setSize(92, 134);
-//		labelCardMonstro.setIcon(cardAtaque);
-//		labelCardMonstro.setLocation(673, 390);
-//		getContentPane().add(labelCardMonstro);
-//		
-//		labelCardMonstro = new JLabel();
-//		cardAtaque = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Exódia, o Proibido.png");
-//		labelCardMonstro.setSize(92, 134);
-//		labelCardMonstro.setIcon(cardAtaque);
-//		labelCardMonstro.setLocation(765, y);
-//		getContentPane().add(labelCardMonstro);
-//		
-//		labelCardMonstro = new JLabel();
-//		cardAtaque = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Braço Esquerdo do Proibido.png");
-//		labelCardMonstro.setSize(92, 134);
-//		labelCardMonstro.setIcon(cardAtaque);
-//		labelCardMonstro.setLocation(857, 390);
-//		getContentPane().add(labelCardMonstro);
-//		
-//		labelCardMonstro = new JLabel();
-//		cardAtaque = new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + "Perna Esquerda do Proibido.png");
-//		labelCardMonstro.setSize(92, 134);
-//		labelCardMonstro.setIcon(cardAtaque);
-//		labelCardMonstro.setLocation(857, 525);
-//		getContentPane().add(labelCardMonstro);
-//		
-//		exodia = new JLabel();
-//		exodia.setSize(600, 338);
-//		exodia.setLocation(500, 30);
-//		exodia.setIcon(new ImageIcon("resources" + File.separator + "Exodia3.gif"));
-//		exodia.setVisible(true);
-//		getContentPane().add(exodia);
-//		
-//		PlaySound p = new PlaySound();
-//		p.playSound("resources" + File.separator + "Exodia3.wav");
-//		criaBackground();
-//	}
-	
 	private void criaLabelTurno() {
-		turno = new JLabel("Turno: " + campoDeBatalha.getTurno());
+		turno = new JLabel();
 		turno.setSize(300, 50);
 		turno.setLocation(1160, 40);
 		turno.setVisible(true);
-		//getContentPane().add(turno);
 		painelJanela.add(turno);
 		criaBackground();
 	}
 	
 	private void criaLabelFase() {
-		String textoFase = verificaFaseString();
-	
-		fase = new JLabel("<html><font color = FFFFFF>" + textoFase + "</font></html>");
+		fase = new JLabel();
 		fase.setSize(300, 50);
 		fase.setLocation(1160, 20);
 		fase.setVisible(true);
-		//getContentPane().add(fase);
 		painelJanela.add(fase);
 		criaBackground();
 	}
@@ -1092,12 +944,7 @@ public class InterfaceGrafica extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				voltaParaPainelInicial();
 			}
-
-			
-			
 		});
-
-		//getContentPane().add(compraCard);
 		painelJanela.add(botaoMenu);
 		criaBackground();
 	}
@@ -1134,14 +981,13 @@ public class InterfaceGrafica extends JFrame {
 	}
 	
 	private void criaPainelInicial() {
-		b = new BackgroundSound();
-		b.backgroundSound("resources" + File.separator + "AudioInicial.wav");
+		somDeFundo = new BackgroundSound();
+		somDeFundo.backgroundSound("resources" + File.separator + "AudioInicial.wav");
 		
 		painelInicial.setSize(1300, 770);
 		painelInicial.setLayout(null);
 		painelInicial.setVisible(true);
 		getContentPane().add(painelInicial);
-		
 	}
 
 	private void setBackgroundPainelInicial() {
@@ -1162,10 +1008,10 @@ public class InterfaceGrafica extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				painelInicial.setVisible(false);
 				criaPainelJanela();
-				campoDeBatalha.setInicioJogo();
-				campoDeBatalha.addCardMaoJogadorNaInterfaceGrafica();
-				campoDeBatalha.addCardMaoComputadorNaInterfaceGrafica();
-				b.closeSound();
+				controle.setInicioJogo();
+				controle.addCardMaoJogadorNaInterfaceGrafica();
+				controle.addCardMaoComputadorNaInterfaceGrafica();
+				somDeFundo.closeSound();
 				criaSoundDrawCards();
 			}
 			
@@ -1182,7 +1028,7 @@ public class InterfaceGrafica extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				campoDeBatalha.salvaArquivo();
+				controle.salvaArquivo();
 				JOptionPane.showMessageDialog(null, "Salvo com sucesso!");
 			}
 			
@@ -1199,7 +1045,7 @@ public class InterfaceGrafica extends JFrame {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				JOptionPane.showMessageDialog(null, campoDeBatalha.retornaEstatisticas());
+				JOptionPane.showMessageDialog(null, controle.retornaEstatisticas());
 			}
 			
 		});
@@ -1217,105 +1063,48 @@ public class InterfaceGrafica extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				painelInicial.setVisible(false);
 				painelJanela.setVisible(true);
-				b.closeSound();
-				//painelJanela.setVisible(true);
+				somDeFundo.closeSound();
 			}
 			
 		});
 		painelInicial.add(botaoVoltarParaOJogo);
 	}
 
-	
-//	private void criaLabelVidaJogador() {
-//		vidaJogador = new JLabel();
-//		vidaJogador.setSize(100, 30);
-//		vidaJogador.setLocation(250, 700);
-//		vidaJogador.setText(campoDeBatalha.getVidaJogador() + "");
-//		vidaJogador.setVisible(true);
-//		painelJanela.add(vidaJogador);
-//	}
-//	
-//	private void criaLabelVidaComputador() {
-//		vidaComputador = new JLabel();
-//		vidaComputador.setSize(100, 30);
-//		vidaComputador.setLocation(300, 20);
-//		vidaComputador.setText(campoDeBatalha.getVidaComputador() + "");
-//		vidaComputador.setVisible(true);
-//		painelJanela.add(vidaComputador);
-//	}
-	
 	public void atualizaVidaJogador() {
-//		vidaJogador.setText(campoDeBatalha.getVidaJogador() + "");
 		PlaySound p = new PlaySound();
 		p.playSound("resources" + File.separator + "Hit.wav");
-		counterJogador.startCounter(campoDeBatalha.getVidaJogador());
-//		if(campoDeBatalha.getVidaJogador() <= 0)
-//			criaExodia();
+		counterJogador.startCounter(controle.getVidaJogador());
 		criaBackground();
 	}
 	
 	public void atualizaVidaComputador() {
-//		vidaComputador.setText(campoDeBatalha.getVidaComputador() + "");
 		PlaySound p = new PlaySound();
 		p.playSound("resources" + File.separator + "Hit.wav");
-		counterComputador.startCounter(campoDeBatalha.getVidaComputador());
-//		if(campoDeBatalha.getVidaComputador() <= 0)
-//			criaExodia();
+		counterComputador.startCounter(controle.getVidaComputador());
 		criaBackground();
 	}
-	
 	
 	private void criaSoundDrawCards() {
 		PlaySound p = new PlaySound();
 		p.playSound("resources" + File.separator + "Draw5Cards.wav");
 	}
 	
-	private void criaJanela() {
-		criaBackground();
-		setUndecorated(false);
-		setLayout(null);
-		setSize(1300, 770);
-		setVisible(true);
-		setResizable(false);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setLocationRelativeTo(null);
-		
-		getContentPane().addMouseMotionListener(new MouseMotionListener() {
-			@Override
-			public void mouseMoved(MouseEvent arg0) {
-				String textoFase = verificaFaseString();
-				String textoTurno = verificaTurnoString();
-				
-				turno.setText("<html><font color = FFFFFF>" + textoTurno + "</font></html>");
-				fase.setText("<html><font color = FFFFFF>" + textoFase + "</font></html>");
-				setEnabled(false);
-				setEnabled(true);
-
-			}
-			@Override
-			public void mouseDragged(MouseEvent e) {
-
-			}
-			
-		});
-		//setExtendedState(JFrame.MAXIMIZED_BOTH);
-		criaBackground();
-	}
 	private String verificaTurnoString() {
 				String textoTurno = "null";
-				if(campoDeBatalha.getTurno() instanceof TurnoJogador)
+				if(controle.verificaTurnoJogador())
 					textoTurno = "Turno do Jogador";
-				if(campoDeBatalha.getTurno() instanceof TurnoComputador)
+				if(controle.verificaTurnoComputador())
 					textoTurno = "Turno do Computador";
 				return textoTurno;
-			}
+	}
+	
 	private String verificaFaseString() {
 				String textoFase = "null";
-				if(campoDeBatalha.getFase() instanceof FasePrincipal1)
+				if(controle.verificaFasePrincipal1())
 					textoFase = "Fase Principal 1";
-				if(campoDeBatalha.getFase() instanceof FaseBatalha)
+				if(controle.verificaFaseBatalha())
 					textoFase = "Fase Batalha";
-				if(campoDeBatalha.getFase() instanceof FasePrincipal2)
+				if(controle.verificaFasePrincipal2())
 					textoFase = "Fase Principal 2";
 				return textoFase;
 	}
@@ -1336,13 +1125,11 @@ public class InterfaceGrafica extends JFrame {
 	public Map<Integer, JButton> getListaButtonsCardsMonstrosComputador() {
 		return this.listaButtonsCardsMonstrosComputador;
 	}
-	
 
-	
 	private void criaTodosOsCardsDoDeckFusao() {
-		criaPainel();
-		for(int i = 0; i < this.campoDeBatalha.getDeckFusaoJogador().size(); i++) {
-			criaCard(campoDeBatalha.getDeckFusaoJogador().get(i));
+		criaPainelDeckFusao();
+		for(int i = 0; i < this.controle.getDeckFusaoJogador().size(); i++) {
+			criaCardMonstroFusao(controle.getDeckFusaoJogador().get(i));
 			posicaoX += 100;
 		}
 		posicaoX = 20;
@@ -1350,9 +1137,7 @@ public class InterfaceGrafica extends JFrame {
 		criaBackground();
 	}
 	
-	
-
-	private void criaCard(CardMonstroFusao card) {
+	private void criaCardMonstroFusao(CardMonstroFusao card) {
 		botaoCardFusao = new JButton();
 		botaoCardFusao.setBounds(posicaoX, 15, 92, 134);
 		botaoCardFusao.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "cardsAtaque" + File.separator + card.getNome() + ".png"));
@@ -1360,51 +1145,29 @@ public class InterfaceGrafica extends JFrame {
 		botaoCardFusao.addMouseListener(new MouseListener() {
 
 			@Override
-			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mouseClicked(MouseEvent e) {}
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
 				criaImagemCard(card.getNome());
 				criaDescricaoCard(card);
-				getContentPane().setEnabled(false);
-				getContentPane().setEnabled(true);
 			}
-
 			@Override
-			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mouseExited(MouseEvent e) {}
 			@Override
-			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-
+			public void mousePressed(MouseEvent e) {}
 			@Override
-			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-			
+			public void mouseReleased(MouseEvent e) {}
 		});
 		painelDeckFusao.add(botaoCardFusao);
 		criaBackground();
 	}
 	
-	private void criaPainel() {
+	private void criaPainelDeckFusao() {
 		painelDeckFusao = new JPanel();
-		
 		painelDeckFusao.setLayout(null);
 		painelDeckFusao.setLocation(500, 350);
 		painelDeckFusao.setSize(430, 170);
 		painelDeckFusao.setVisible(true);
-		//getContentPane().add(painelDeckFusao);
 		painelJanela.add(painelDeckFusao);
 		criaBackground();
 	}
@@ -1415,9 +1178,18 @@ public class InterfaceGrafica extends JFrame {
 		fundoPainel.setIcon(new ImageIcon("resources" + File.separator + "images" + File.separator + "painel.png"));
 		fundoPainel.setVisible(true);
 		painelDeckFusao.add(fundoPainel);
-		refresh();
 		criaBackground();
 	}
 	
-
+	private void criaJanela() {
+		criaBackground();
+		setUndecorated(false);
+		setLayout(null);
+		setSize(1300, 770);
+		setVisible(true);
+		setResizable(false);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setLocationRelativeTo(null);
+		criaBackground();
+	}
 }

@@ -1,6 +1,5 @@
 package modelo.estados.estadosCard;
 
-import excecoes.ExcecaoFace;
 import excecoes.ExcecaoFaceParaCima;
 import interfaces.Face;
 import modelo.Card;

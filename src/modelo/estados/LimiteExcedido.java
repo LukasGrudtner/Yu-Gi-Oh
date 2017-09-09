@@ -1,11 +1,7 @@
 package modelo.estados;
 
-import excecoes.ExcecaoLimite;
 import excecoes.ExcecaoLimiteExcedido;
 import interfaces.Limite;
-import modelo.CampoDeBatalha;
-import modelo.Computador;
-import modelo.Jogador;
 import modelo.Player;
 
 public class LimiteExcedido implements Limite {

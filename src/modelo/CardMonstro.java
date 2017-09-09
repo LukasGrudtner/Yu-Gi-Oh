@@ -4,10 +4,7 @@ import excecoes.ExcecaoAtaque;
 import excecoes.ExcecaoPosicao;
 import interfaces.Ataque;
 import interfaces.Posicao;
-import modelo.estados.estadosCard.PosicaoAtaque;
-import modelo.estados.estadosCard.PosicaoDefesa;
 import modelo.estados.estadosCard.estadosCardMonstro.AtaqueNaoRealizado;
-import modelo.tipos.Efeito;
 
 public abstract class CardMonstro extends Card{
 	
